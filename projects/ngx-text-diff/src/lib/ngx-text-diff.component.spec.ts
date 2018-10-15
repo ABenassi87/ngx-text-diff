@@ -1,6 +1,8 @@
-/*import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgxTextDiffComponent } from './ngx-text-diff.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 describe('NgxTextDiffComponent', () => {
   let component: NgxTextDiffComponent;
@@ -8,9 +10,9 @@ describe('NgxTextDiffComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgxTextDiffComponent ]
-    })
-    .compileComponents();
+      imports: [FormsModule, CommonModule],
+      declarations: [NgxTextDiffComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -22,4 +24,4 @@ describe('NgxTextDiffComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-});*/
+});

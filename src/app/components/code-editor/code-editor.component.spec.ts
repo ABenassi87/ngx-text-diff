@@ -1,7 +1,7 @@
-/*
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CodeEditorComponent } from './code-editor.component';
+import { CommonModule } from '@angular/common';
 
 describe('CodeEditorComponent', () => {
   let component: CodeEditorComponent;
@@ -9,9 +9,9 @@ describe('CodeEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CodeEditorComponent ]
-    })
-    .compileComponents();
+      imports: [CommonModule],
+      declarations: [CodeEditorComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -24,4 +24,3 @@ describe('CodeEditorComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-*/

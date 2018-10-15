@@ -33,6 +33,7 @@ module.exports = function (config) {
         flags: ['--no-sandbox']
       }
     },
+    // you can define custom flags
     singleRun: true
   });
 };
