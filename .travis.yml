@@ -17,7 +17,7 @@ deploy:
   provider: heroku
   api_key:
     secure: 8d1dd2e7-e9a5-47da-ae76-f427b9c70f4c
-  app: ngx-text-diff-app
+  app: ngx-text-diff
   on:
     repo: ABenassi87/ngx-text-diff
     branch: release-0.5.0
