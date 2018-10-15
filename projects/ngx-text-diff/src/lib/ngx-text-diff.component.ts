@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { DiffContent, DiffTableBothRow, DiffTableFormat, DiffTableFormatOption, DiffTableRow } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
@@ -6,8 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 @Component({
   selector: 'td-ngx-text-diff',
   templateUrl: './ngx-text-diff.component.html',
-  styleUrls: ['./ngx-text-diff.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./ngx-text-diff.component.css']
 })
 export class NgxTextDiffComponent implements OnInit {
   @Input() format: DiffTableFormat = 'SideBySide';
