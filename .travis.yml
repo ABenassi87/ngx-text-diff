@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- '8'
+before_install:
+- npm install -g @angular/cli
+install: npm install
+branches:
+  only:
+  - release-0.5.0
+after_script:
+- chmod +x publish-gh-pages.sh && ./publish-gh-pages.sh
+deploy:
+  provider: heroku
+  api_key:
+    secure: generate your's using travis cli
+  app: ngx-text-diff-app
