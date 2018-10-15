@@ -1,9 +1,11 @@
 import {
-  AfterViewInit, ChangeDetectionStrategy,
+  AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   DoCheck,
   ElementRef,
-  EventEmitter, forwardRef,
+  EventEmitter,
+  forwardRef,
   Input,
   KeyValueDiffer,
   KeyValueDiffers,
