@@ -1,4 +1,4 @@
-import { ComponentsModule } from './components.module';
+/*import { ComponentsModule } from './components.module';
 
 describe('ComponentsModule', () => {
   let componentsModule: ComponentsModule;
@@ -10,4 +10,4 @@ describe('ComponentsModule', () => {
   it('should create an instance', () => {
     expect(componentsModule).toBeTruthy();
   });
-});
+});*/
