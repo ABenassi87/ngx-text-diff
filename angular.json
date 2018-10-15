@@ -121,6 +121,41 @@
           }
         }
       }
+    },
+    "ngx-text-diff": {
+      "root": "projects/ngx-text-diff",
+      "sourceRoot": "projects/ngx-text-diff/src",
+      "projectType": "library",
+      "prefix": "td",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-text-diff/tsconfig.lib.json",
+            "project": "projects/ngx-text-diff/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-text-diff/src/test.ts",
+            "tsConfig": "projects/ngx-text-diff/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-text-diff/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-text-diff/tsconfig.lib.json",
+              "projects/ngx-text-diff/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-text-diff-app"
