@@ -9,6 +9,8 @@ branches:
   - release-0.5.0
 after_script:
 - chmod +x publish-gh-pages.sh && ./publish-gh-pages.sh
+addons:
+  chrome: stable
 deploy:
   provider: heroku
   api_key:
