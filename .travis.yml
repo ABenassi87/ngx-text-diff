@@ -12,5 +12,5 @@ after_script:
 deploy:
   provider: heroku
   api_key:
-    secure: generate your's using travis cli
+    secure: 8d1dd2e7-e9a5-47da-ae76-f427b9c70f4c
   app: ngx-text-diff-app
