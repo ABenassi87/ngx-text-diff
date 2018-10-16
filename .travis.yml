@@ -1,0 +1,26 @@
+language: node_js
+dist: trusty
+sudo: required
+node_js:
+- '8'
+before_install:
+- npm install -g @angular/cli @angular/compiler-cli typescript
+install: npm install
+branches:
+  only:
+    - master
+    - staging
+    - dev
+    - release-0.5.0
+after_script:
+- chmod +x publish-gh-pages.sh && ./publish-gh-pages.sh
+addons:
+  chrome: stable
+deploy:
+  provider: heroku
+  api_key:
+    secure: $HEROKU_AUTH_TOKEN
+  app: ngx-text-diff
+  on:
+    repo: ABenassi87/ngx-text-diff
+    branch: release-0.5.0

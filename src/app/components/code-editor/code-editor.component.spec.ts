@@ -1,22 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgxTextDiffComponent } from './ngx-text-diff.component';
-import { FormsModule } from '@angular/forms';
+import { CodeEditorComponent } from './code-editor.component';
 import { CommonModule } from '@angular/common';
 
-describe('NgxTextDiffComponent', () => {
-  let component: NgxTextDiffComponent;
-  let fixture: ComponentFixture<NgxTextDiffComponent>;
+describe('CodeEditorComponent', () => {
+  let component: CodeEditorComponent;
+  let fixture: ComponentFixture<CodeEditorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, CommonModule],
-      declarations: [NgxTextDiffComponent]
+      imports: [CommonModule],
+      declarations: [CodeEditorComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NgxTextDiffComponent);
+    fixture = TestBed.createComponent(CodeEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
