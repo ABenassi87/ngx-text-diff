@@ -2,13 +2,14 @@
   <h3>Comparison</h3>
   <div class="td-wrapper">
     <div class="td-toolbar-show-diff">
-      <input type="checkbox"
-             class=""
-             id="showDiffs"
-             [ngModel]="showLinesDiffs"
-             (ngModelChange)="showLinesDiffsChange($event)"
-      >
-      <label class="" for="showDiffs">Show Lines with Diffs ({{diffs}})</label>
+      <label class="td-checkbox-container">Show Lines with Diffs ({{diffs}})
+        <input type="checkbox"
+               id="showDiffs"
+               [ngModel]="showLinesDiffs"
+               (ngModelChange)="showLinesDiffsChange($event)"
+        >
+        <span class="checkmark"></span>
+      </label>
     </div>
     <div class="td-toolbar-select-format">
       <div class="td-btn-group td-btn-group-toggle" data-toggle="buttons">
@@ -22,48 +23,59 @@
         </button>
       </div>
     </div>
-    <table class="td-table td-table-container side-by-side" *ngIf="format === 'SideBySide'">
-      <tbody>
-      <tr *ngFor="let row of filteredLeftRightRows">
-        <td scope="row" class="fit-column line-number-col"
-            [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">{{(row.lineNumberLeft !== -1) ?
-          row.lineNumberLeft : ' '}}
-        </td>
-        <td class="fit-column prefix-col" [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">
-          <pre>{{row.prefix || ' '}}</pre>
-        </td>
-        <td class="content-col" [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">
-          <pre>{{row.content || ' '}}</pre>
-        </td>
-        <td scope="row" class="fit-column line-number-col"
-            [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
-          {{(row.lineNumberRight !== -1) ? row.lineNumberRight : ' '}}
-        </td>
-        <td class="fit-column prefix-col"
-            [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
-          <pre>{{row.prefixRight || ' '}}</pre>
-        </td>
-        <td class="content-col" [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
-          <pre>{{row.contentRight || ' '}}</pre>
-        </td>
-      <tr>
-      </tr>
-      </tbody>
-    </table>
-    <table class="td-table td-table-container line-by-line" *ngIf="format === 'LineByLine'">
-      <tbody>
-      <tr *ngFor="let row of filteredRows">
-        <td scope="row" class="fit-column line-number-col-left">{{row.lineNumberLeft}}</td>
-        <td scope="row" class="fit-column line-number-col">{{row.lineNumberRight}}</td>
-        <td class="fit-column prefix-col"
-            [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
-          <pre>{{row.prefix || ' '}}</pre>
-        </td>
-        <td class="content-col" [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
-          <pre>{{row.content || ' '}}</pre>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="td-table-wrapper">
+      <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'">
+      <table class="td-table">
+        <tbody>
+        <tr *ngFor="let row of filteredLeftRightRows">
+          <td scope="row" class="fit-column line-number-col"
+              [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">{{(row.lineNumberLeft !== -1) ?
+            row.lineNumberLeft : ' '}}
+          </td>
+          <td class="fit-column prefix-col" [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">
+            <pre>{{row.prefix || ' '}}</pre>
+          </td>
+          <td class="content-col" [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">
+            <pre>{{row.content || ' '}}</pre>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'">
+      <table class="td-table td-table-container side-by-side" *ngIf="format === 'SideBySide'">
+        <tbody>
+        <tr *ngFor="let row of filteredLeftRightRows">
+          <td scope="row" class="fit-column line-number-col"
+              [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
+            {{(row.lineNumberRight !== -1) ? row.lineNumberRight : ' '}}
+          </td>
+          <td class="fit-column prefix-col"
+              [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
+            <pre>{{row.prefixRight || ' '}}</pre>
+          </td>
+          <td class="content-col" [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
+            <pre>{{row.contentRight || ' '}}</pre>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      </div>
+      <table class="td-table td-table-container line-by-line" *ngIf="format === 'LineByLine'">
+        <tbody>
+        <tr *ngFor="let row of filteredRows">
+          <td scope="row" class="fit-column line-number-col-left">{{row.lineNumberLeft}}</td>
+          <td scope="row" class="fit-column line-number-col">{{row.lineNumberRight}}</td>
+          <td class="fit-column prefix-col"
+              [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
+            <pre>{{row.prefix || ' '}}</pre>
+          </td>
+          <td class="content-col" [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
+            <pre>{{row.content || ' '}}</pre>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

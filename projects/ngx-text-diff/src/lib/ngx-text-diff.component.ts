@@ -36,14 +36,6 @@ export class NgxTextDiffComponent implements OnInit {
       label: 'Line by Line',
       value: 'LineByLine',
       icon: 'la-file-text'
-    },
-    {
-      id: 'merge-view',
-      name: 'merge-view',
-      label: 'Merge View',
-      value: 'MergeView',
-      icon: 'la-file-text',
-      disabled: true
     }
   ];
 

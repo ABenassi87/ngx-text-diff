@@ -8,7 +8,10 @@ before_install:
 install: npm install
 branches:
   only:
-  - release-0.5.0
+    - master
+    - staging
+    - dev
+    - release-0.5.0
 after_script:
 - chmod +x publish-gh-pages.sh && ./publish-gh-pages.sh
 addons:
@@ -16,7 +19,7 @@ addons:
 deploy:
   provider: heroku
   api_key:
-    secure: 8d1dd2e7-e9a5-47da-ae76-f427b9c70f4c
+    secure: $HEROKU_AUTH_TOKEN
   app: ngx-text-diff
   on:
     repo: ABenassi87/ngx-text-diff

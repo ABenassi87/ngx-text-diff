@@ -1,9 +1,9 @@
 .td-wrapper {
   display: grid;
   width: 100%;
-  grid-gap: 10px;
-  grid-template-columns: repeat(2, [col] 50% ) ;
-  grid-template-rows: repeat(2, [row] auto  );
+  grid-row-gap: 10px;
+  grid-template-columns: repeat(2, [col] 50%);
+  grid-template-rows: repeat(2, [row] auto);
   background-color: #fff;
   color: #444;
 }
@@ -20,18 +20,25 @@
 
 .td-toolbar-show-diff {
   grid-column: 1;
-  grid-row: 1 ;
+  grid-row: 1;
 }
 
 .td-toolbar-select-format {
   margin-left: auto;
   grid-column: 2;
-  grid-row: 1 ;
+  grid-row: 1;
 }
 
 .td-table-container {
   grid-column: 1 / 2;
   grid-row: 2;
+  width: 100%;
+  max-width: 100%;
+}
+
+.td-table-wrapper {
+  display: flex;
+  width: 200%;
 }
 
 .td-table {
@@ -85,6 +92,8 @@
   border-top: 0;
   padding-top: 0;
   padding-bottom: 0;
+  word-wrap: break-word;
+  max-width: 50%;
 }
 
 pre {
@@ -103,11 +112,14 @@ td.prefix-col {
   line-height: 20px;
 }
 
+.td-btn-group {
+  border-radius: 4px;
+}
+
 .td-btn-group button {
-  background-color: #4CAF50; /* Green background */
-  border: 1px solid green; /* Green border */
+  background-color: rgba(23,162,184,.7); /* Green background */
+  border: 1px solid #17a2b8; /* Green border */
   color: white; /* White text */
-  padding: 10px 24px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -115,15 +127,102 @@ td.prefix-col {
 .td-btn-group button:not(:last-child) {
   border-right: none; /* Prevent double borders */
 }
+.td-btn-group button:first-child {
+  -webkit-border-top-left-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  -moz-border-radius-topleft: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.td-btn-group button:last-child {
+  -webkit-border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  -moz-border-radius-bottomright: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
 
 /* Clear floats (clearfix hack) */
 .td-btn-group:after {
-  content: "";
+  content: '';
   clear: both;
   display: table;
 }
 
 /* Add a background color on hover */
-.td-btn-group button:hover {
-  background-color: #3e8e41;
+.td-btn-group button:hover,
+.td-btn-group button.active {
+  background-color: #17a2b8;
+}
+
+/* Customize the label (the container) */
+.td-checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 21px;
+  margin-bottom: 0;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 28px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.td-checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 7px;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.td-checkbox-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.td-checkbox-container input:checked ~ .checkmark {
+  background-color: #17a2b8;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.td-checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.td-checkbox-container .checkmark:after {
+  left: 5px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
