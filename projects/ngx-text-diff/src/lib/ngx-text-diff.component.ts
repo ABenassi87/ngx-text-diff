@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { DiffContent, DiffTableBothRow, DiffTableFormat, DiffTableFormatOption, DiffTableRow } from './ngx-text-diff.model';
+import { DiffContent, DiffPart, DiffTableBothRow, DiffTableFormat, DiffTableFormatOption, DiffTableRow } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
 
@@ -14,6 +14,7 @@ export class NgxTextDiffComponent implements OnInit {
   @Input() right = '';
   @Input() loading = false;
   @Input() diffContentObservable$: Observable<DiffContent>;
+  @Input() showBtnToolbar = true;
   subscriptions: Subscription[] = [];
   rows: DiffTableRow[] = [];
   filteredRows: DiffTableRow[] = [];
@@ -75,7 +76,7 @@ export class NgxTextDiffComponent implements OnInit {
     this.leftRightRows = [];
     this.rows = [];
     this.diffs = 0;
-    this.diff.getDiffs(this.left, this.right).then((diffRows: DiffTableRow[]) => {
+    this.diff.getDiffsByLines(this.left, this.right).then((diffRows: DiffTableRow[]) => {
       diffRows.forEach(row => {
         switch (row.belongTo) {
           case 'both':
@@ -96,8 +97,8 @@ export class NgxTextDiffComponent implements OnInit {
                 lineNumberRight: rightRow ? rightRow.lineNumberRight : null,
                 prefix: row.prefix,
                 prefixRight: rightRow ? rightRow.prefix : null,
-                content: row.content,
-                contentRight: rightRow ? rightRow.content : null
+                content: this.getDiffParts(row.content[0].diff, rightRow.content[0].diff),
+                contentRight: rightRow ? this.getDiffParts(rightRow.content[0].diff, row.content[0].diff) : null
               });
             }
             break;
@@ -109,8 +110,8 @@ export class NgxTextDiffComponent implements OnInit {
                 lineNumberRight: row.lineNumberRight,
                 prefix: leftRow ? leftRow.prefix : null,
                 prefixRight: row.prefix,
-                content: leftRow ? leftRow.content : null,
-                contentRight: row.content
+                content: leftRow ? this.getDiffParts(leftRow.content[0].diff, row.content[0].diff) : null,
+                contentRight: this.getDiffParts(row.content[0].diff, leftRow.content[0].diff)
               });
             }
             break;
@@ -122,5 +123,42 @@ export class NgxTextDiffComponent implements OnInit {
       this.filteredRows = this.rows;
       this.loading = false;
     });
+  }
+
+  private getDiffParts(value: string, compareValue: string): DiffPart[] {
+    const diffText: DiffPart[] = [];
+    let i = 0;
+    let j = 0;
+    let prefix = '';
+    let diff = '';
+
+    while (i < value.length) {
+      if (value[i] === compareValue[j] && j < compareValue.length) {
+        if (diff === '') {
+          prefix += value[i];
+        } else {
+          diffText.push({
+            prefix: prefix,
+            diff: diff
+          });
+          prefix = value[i];
+          diff = '';
+        }
+        i++;
+        j++;
+      } else {
+        diff += value[i];
+        i++;
+      }
+    }
+
+    if (diff !== '') {
+      diffText.push({
+        prefix: '',
+        diff: diff
+      });
+    }
+
+    return diffText;
   }
 }

@@ -34,6 +34,7 @@
   grid-row: 2;
   width: 100%;
   max-width: 100%;
+  overflow-x: auto;
 }
 
 .td-table-wrapper {
@@ -86,6 +87,7 @@
 
 .empty-row {
   background-color: #f7f7f7;
+  height: 21px;
 }
 
 .td-table td {
