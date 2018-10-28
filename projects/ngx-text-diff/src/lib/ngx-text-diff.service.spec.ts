@@ -1,7 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { NgxTextDiffService } from './ngx-text-diff.service';
-import { DiffTableRow, DiffTableRowResult } from './ngx-text-diff.model';
+import { DiffTableRowResult } from './ngx-text-diff.model';
 
 export interface TextDiffTestCase {
   id: number;
