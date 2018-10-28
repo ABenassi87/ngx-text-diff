@@ -8,7 +8,13 @@
     "test": "ng test",
     "lint": "ng lint",
     "postinstall": "ng build --prod",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build_lib": "ng build ngx-text-diff",
+    "copy-license": "copy .\\projects\\ngx-text-diff\\LICENSE .\\dist\\ngx-text-diff",
+    "copy-readme": "copy .\\projects\\ngx-text-diff\\README.md .\\dist\\ngx-text-diff",
+    "copy-files": "npm run copy-license && npm run copy-readme",
+    "npm_pack": "cd dist/ngx-text-diff && npm pack",
+    "package": "npm run build_lib && npm run copy-files && npm run npm_pack"
   },
   "engines": {
     "node": "8.11.3",

@@ -114,7 +114,6 @@
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "outputPath": "projects/ngx-text-diff/dist/ngx-text-diff",
             "tsConfig": "projects/ngx-text-diff/tsconfig.lib.json",
             "project": "projects/ngx-text-diff/ng-package.json"
           }

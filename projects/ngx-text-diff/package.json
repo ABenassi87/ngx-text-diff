@@ -1,6 +1,23 @@
 {
   "name": "ngx-text-diff",
   "version": "0.5.0",
+  "description": "A Text Diff component for Angular 6.",
+  "keywords": [
+    "Angular",
+    "Library",
+    "Google",
+    "Diff"
+  ],
+  "license": "SEE LICENSE IN LICENSE",
+  "author": {
+    "name": "Alfredo Benassi",
+    "email": "alfrebenassi@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ABenassi87/ngx-text-diff.git"
+  },
+  "homepage": "https://ngx-text-diff.herokuapp.com/home",
   "dependencies": {
     "diff-match-patch": "^1.0.4"
   },
