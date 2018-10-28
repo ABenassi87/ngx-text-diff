@@ -94,11 +94,11 @@ export class NgxTextDiffService {
               };
               if (leftDiffRow) {
                 leftDiffRow.rightContent = rightContent;
-                leftDiffRow.leftContent.lineDiffs = this.getDiffPartsNew(
+                leftDiffRow.leftContent.lineDiffs = this.getDiffParts(
                   leftDiffRow.leftContent.lineContent,
                   leftDiffRow.rightContent.lineContent
                 );
-                leftDiffRow.rightContent.lineDiffs = this.getDiffPartsNew(
+                leftDiffRow.rightContent.lineDiffs = this.getDiffParts(
                   leftDiffRow.rightContent.lineContent,
                   leftDiffRow.leftContent.lineContent
                 );
@@ -125,11 +125,11 @@ export class NgxTextDiffService {
               };
               if (rightDiffRow) {
                 rightDiffRow.leftContent = leftContent;
-                rightDiffRow.leftContent.lineDiffs = this.getDiffPartsNew(
+                rightDiffRow.leftContent.lineDiffs = this.getDiffParts(
                   rightDiffRow.leftContent.lineContent,
                   rightDiffRow.rightContent.lineContent
                 );
-                rightDiffRow.rightContent.lineDiffs = this.getDiffPartsNew(
+                rightDiffRow.rightContent.lineDiffs = this.getDiffParts(
                   rightDiffRow.rightContent.lineContent,
                   rightDiffRow.leftContent.lineContent
                 );
@@ -161,33 +161,7 @@ export class NgxTextDiffService {
     return diffRowsResult;
   }
 
-  private getDiffParts(value: string, compareValue: string): string[] {
-    const diffText: string[] = [];
-    let i = 0;
-    let j = 0;
-    let diff = '';
-
-    while (i < value.length) {
-      if (value[i] === compareValue[j] && j < compareValue.length) {
-        if (diff !== '') {
-          diffText.push(diff);
-          diff = '';
-        }
-      } else {
-        diff += value[i];
-      }
-      i++;
-      j++;
-    }
-
-    if (diff !== '') {
-      diffText.push(diff);
-    }
-
-    return diffText;
-  }
-
-  private getDiffPartsNew(value: string, compareValue: string): DiffPart[] {
+  private getDiffParts(value: string, compareValue: string): DiffPart[] {
     const diffParts: DiffPart[] = [];
     let i = 0;
     let j = 0;

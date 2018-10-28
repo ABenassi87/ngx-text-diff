@@ -23,12 +23,8 @@ export class NgxTextDiffComponent implements OnInit {
   @Input() diffContentObservable$: Observable<DiffContent>;
   @Input() showBtnToolbar = true;
   subscriptions: Subscription[] = [];
-  rows: DiffTableRow[] = [];
-  filteredRows: DiffTableRow[] = [];
-  leftRightRows: DiffTableBothRow[] = [];
-  filteredLeftRightRows: DiffTableBothRow[] = [];
-  results: DiffTableRowResult[] = [];
-  filteredResults: DiffTableRowResult[] = [];
+  tableRows: DiffTableRowResult[] = [];
+  filteredTableRows: DiffTableRowResult[] = [];
   showLinesDiffs = false;
   diffsCount = 0;
 
@@ -69,11 +65,11 @@ export class NgxTextDiffComponent implements OnInit {
   showLinesDiffsChange(value: boolean) {
     this.showLinesDiffs = value;
     if (this.showLinesDiffs) {
-      this.filteredResults = this.results.filter(
+      this.filteredTableRows = this.tableRows.filter(
         row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
       );
     } else {
-      this.filteredResults = this.results;
+      this.filteredTableRows = this.tableRows;
     }
   }
 
@@ -85,17 +81,17 @@ export class NgxTextDiffComponent implements OnInit {
     try {
       this.loading = true;
       this.diffsCount = 0;
-      this.results = await this.diff.getDiffsByLines(this.left, this.right);
-      this.diffsCount = this.results.filter(
+      this.tableRows = await this.diff.getDiffsByLines(this.left, this.right);
+      this.diffsCount = this.tableRows.filter(
         row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
       ).length;
-      this.filteredResults = this.results;
+      this.filteredTableRows = this.tableRows;
       this.loading = false;
     } catch (e) {
     }
   }
 
-  trackResults(index, row: DiffTableRowResult) {
+  trackTableRows(index, row: DiffTableRowResult) {
     return row && row.leftContent ? row.leftContent.lineContent : row && row.rightContent ? row.rightContent.lineContent : undefined;
   }
 }

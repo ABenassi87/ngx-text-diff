@@ -15,27 +15,6 @@ export interface DiffContent {
   rightContent: string;
 }
 
-export interface DiffTableRow {
-  lineNumberLeft?: number;
-  lineNumberRight?: number;
-  prefix?: string;
-  content: DiffPart[];
-  belongTo?: SideDiff;
-}
-
-export interface DiffTableBothRow extends DiffTableRow {
-  prefixRight?: string;
-  contentRight?: DiffPart[];
-}
-
-export interface DiffTextContent {
-  lineNumberLeft?: number;
-  lineNumberRight?: number;
-  prefix?: string;
-  diffParts: DiffPart[];
-  belongTo: SideDiff;
-}
-
 export interface DiffPart {
   content: string;
   isDiff: boolean;
