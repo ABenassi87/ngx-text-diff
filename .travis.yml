@@ -23,4 +23,4 @@ deploy:
   app: ngx-text-diff-staging
   on:
     repo: ABenassi87/ngx-text-diff
-    branch: feature-2
+    branch: staging

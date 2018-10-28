@@ -171,19 +171,13 @@ export class NgxTextDiffService {
     while (i < value.length) {
       if (value[i] === compareValue[j] && j < compareValue.length) {
         if (diff !== '') {
-          diffParts.push({
-            content: diff,
-            isDiff: true
-          });
+          diffParts.push({ content: diff, isDiff: true });
           diff = '';
         }
         shared += value[i];
       } else {
         if (shared !== '') {
-          diffParts.push({
-            content: shared,
-            isDiff: false
-          });
+          diffParts.push({ content: shared, isDiff: false });
           shared = '';
         }
         diff += value[i];
@@ -193,15 +187,9 @@ export class NgxTextDiffService {
     }
 
     if (diff !== '') {
-      diffParts.push({
-        content: diff,
-        isDiff: true
-      });
+      diffParts.push({ content: diff, isDiff: true });
     } else if (shared !== '') {
-      diffParts.push({
-        content: shared,
-        isDiff: false
-      });
+      diffParts.push({ content: shared, isDiff: false });
     }
 
     return diffParts;
