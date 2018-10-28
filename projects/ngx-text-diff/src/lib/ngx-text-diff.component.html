@@ -2,7 +2,7 @@
 <div *ngIf="!loading">
   <div class="td-wrapper">
     <div class="td-toolbar-show-diff">
-      <label class="td-checkbox-container">Show Lines with Diffs ({{diffs}})
+      <label class="td-checkbox-container">Show Lines with Diffs ({{diffsCount}})
         <input type="checkbox"
                id="showDiffs"
                [ngModel]="showLinesDiffs"
@@ -25,57 +25,76 @@
     </div>
     <div class="td-table-wrapper">
       <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'">
-      <table class="td-table">
-        <tbody>
-        <tr *ngFor="let row of filteredLeftRightRows">
-          <td scope="row" class="fit-column line-number-col"
-              [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">{{(row.lineNumberLeft !== -1) ?
-            row.lineNumberLeft : ' '}}
-          </td>
-          <td class="fit-column prefix-col" [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">
-            <pre>{{row.prefix || ' '}}</pre>
-          </td>
-          <td class="content-col" [ngClass]="{'delete-row' : row.prefix === '-', 'empty-row': !row.content}">
-            <pre>{{row.content || ' '}}</pre>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+        <table class="td-table">
+          <tbody>
+          <tr *ngFor="let row of filteredResults; trackBy: trackResults">
+            <td scope="row" class="fit-column line-number-col"
+                [ngClass]="{'delete-row' : row.leftContent?.prefix === '-', 'empty-row': !row.leftContent?.lineContent}">
+              {{(row.leftContent?.lineNumber !== -1) ?
+              row.leftContent?.lineNumber : ' '}}
+            </td>
+            <td class="fit-column prefix-col"
+                [ngClass]="{'delete-row' : row.leftContent?.prefix === '-', 'empty-row': !row.leftContent?.lineContent}">
+              <span>{{row.leftContent?.prefix || ' '}}</span>
+            </td>
+            <td class="content-col"
+                [ngClass]="{'delete-row' : row.leftContent?.prefix === '-', 'empty-row': !row.leftContent?.lineContent}"
+                *ngIf="row.leftContent?.lineDiffs?.length === 0">
+              <span [innerHTML]="row.leftContent?.lineContent | formatLine"></span>
+            </td>
+            <td class="content-col"
+                [ngClass]="{'delete-row' : row.leftContent?.prefix === '-', 'empty-row': !row.leftContent?.lineContent}"
+                *ngIf="row.leftContent?.lineDiffs?.length !== 0">
+              <span [innerHTML]="diff.content | formatLine" [ngClass]="{'highlight': diff.isDiff}"
+                    *ngFor="let diff of row.leftContent?.lineDiffs"></span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
       <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'">
-      <table class="td-table">
-        <tbody>
-        <tr *ngFor="let row of filteredLeftRightRows">
-          <td scope="row" class="fit-column line-number-col"
-              [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
-            {{(row.lineNumberRight !== -1) ? row.lineNumberRight : ' '}}
-          </td>
-          <td class="fit-column prefix-col"
-              [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
-            <pre>{{row.prefixRight || ' '}}</pre>
-          </td>
-          <td class="content-col" [ngClass]="{'insert-row' : row.prefixRight === '+', 'empty-row': !row.contentRight}">
-            <pre>{{row.contentRight || ' '}}</pre>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+        <table class="td-table">
+          <tbody>
+          <tr *ngFor="let row of filteredResults; trackBy: trackResults">
+            <td scope="row" class="fit-column line-number-col"
+                [ngClass]="{'insert-row' : row.rightContent?.prefix === '+', 'empty-row': !row.rightContent?.lineContent}">
+              {{(row.rightContent?.lineNumber !== -1) ?
+              row.rightContent?.lineNumber : ' '}}
+            </td>
+            <td class="fit-column prefix-col"
+                [ngClass]="{'insert-row' : row.rightContent?.prefix === '+', 'empty-row': !row.rightContent?.lineContent}">
+              <span>{{row.rightContent?.prefix || ' '}}</span>
+            </td>
+            <td class="content-col"
+                [ngClass]="{'insert-row' : row.rightContent?.prefix === '+', 'empty-row': !row.rightContent?.lineContent}"
+                *ngIf="row.rightContent?.lineDiffs?.length === 0">
+              <span [innerHTML]="row.rightContent?.lineContent | formatLine"></span>
+            </td>
+            <td class="content-col"
+                [ngClass]="{'insert-row' : row.rightContent?.prefix === '+', 'empty-row': !row.rightContent?.lineContent}"
+                *ngIf="row.rightContent?.lineDiffs?.length !== 0">
+              <span [innerHTML]="diff.content | formatLine" [ngClass]="{'highlight': diff.isDiff}"
+                    *ngFor="let diff of row.rightContent?.lineDiffs"></span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
-      <table class="td-table td-table-container line-by-line" *ngIf="format === 'LineByLine'">
-        <tbody>
-        <tr *ngFor="let row of filteredRows">
-          <td scope="row" class="fit-column line-number-col-left">{{row.lineNumberLeft}}</td>
-          <td scope="row" class="fit-column line-number-col">{{row.lineNumberRight}}</td>
-          <td class="fit-column prefix-col"
-              [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
-            <pre>{{row.prefix || ' '}}</pre>
-          </td>
-          <td class="content-col" [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
-            <pre>{{row.content || ' '}}</pre>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+      <!-- <table class="td-table td-table-container line-by-line" *ngIf="format === 'LineByLine'">
+         <tbody>
+         <tr *ngFor="let row of filteredRows">
+           <td scope="row" class="fit-column line-number-col-left">{{row.lineNumberLeft}}</td>
+           <td scope="row" class="fit-column line-number-col">{{row.lineNumberRight}}</td>
+           <td class="fit-column prefix-col"
+               [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
+             <pre>{{row.prefix || ' '}}</pre>
+           </td>
+           <td class="content-col" [ngClass]="{'delete-row' : row.prefix === '-', 'insert-row' : row.prefix === '+'}">
+             <pre>{{row.content || ' '}}</pre>
+           </td>
+         </tr>
+         </tbody>
+       </table>-->
     </div>
   </div>
 </div>

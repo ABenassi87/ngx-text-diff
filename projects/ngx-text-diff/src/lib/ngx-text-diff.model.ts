@@ -37,13 +37,20 @@ export interface DiffTextContent {
 }
 
 export interface DiffPart {
-  prefix: string;
-  diff?: string;
+  content: string;
+  isDiff: boolean;
 }
 
 export interface DiffLineResult {
   lineNumber: number;
   prefix: string;
   lineContent: string;
-  lineDiffs: string[];
+  lineDiffs: DiffPart[];
+}
+
+export interface DiffTableRowResult {
+  leftContent: DiffLineResult;
+  rightContent: DiffLineResult;
+  belongTo: SideDiff;
+  hasDiffs: boolean;
 }
