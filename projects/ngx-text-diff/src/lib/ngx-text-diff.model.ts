@@ -1,4 +1,4 @@
-export type DiffTableFormat = 'SideBySide' | 'LineByLine' | 'MergeView';
+export type DiffTableFormat = 'SideBySide' | 'LineByLine';
 export type SideDiff = 'both' | 'left' | 'right';
 
 export interface DiffTableFormatOption {

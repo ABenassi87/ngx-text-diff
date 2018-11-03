@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { DiffContent, DiffLineResult, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult } from './ngx-text-diff.model';
+import { DiffContent, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
 
@@ -12,8 +12,8 @@ export class NgxTextDiffComponent implements OnInit {
   @Input() format: DiffTableFormat = 'SideBySide';
   @Input() left = '';
   @Input() right = '';
+  @Input() diffContent: Observable<DiffContent>;
   @Input() loading = false;
-  @Input() diffContentObservable$: Observable<DiffContent>;
   @Input() showBtnToolbar = true;
   subscriptions: Subscription[] = [];
   tableRows: DiffTableRowResult[] = [];
@@ -43,9 +43,9 @@ export class NgxTextDiffComponent implements OnInit {
   constructor(private diff: NgxTextDiffService, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
-    if (this.diffContentObservable$) {
+    if (this.diffContent) {
       this.subscriptions.push(
-        this.diffContentObservable$.subscribe(content => {
+        this.diffContent.subscribe(content => {
           this.left = content.leftContent;
           this.right = content.rightContent;
           this.renderDiffs().then(() => {

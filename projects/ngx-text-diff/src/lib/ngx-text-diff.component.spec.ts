@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgxTextDiffComponent } from './ngx-text-diff.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LoaderSppinerComponent } from './loader-sppiner/loader-sppiner.component';
+import { LoaderSpinnerComponent } from './loader-spinner/loader-spinner.component';
 import { FormatLinePipe } from './format-line.pipe';
 
 describe('NgxTextDiffComponent', () => {
@@ -13,7 +13,7 @@ describe('NgxTextDiffComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [FormsModule, CommonModule],
-      declarations: [NgxTextDiffComponent, LoaderSppinerComponent, FormatLinePipe]
+      declarations: [NgxTextDiffComponent, LoaderSpinnerComponent, FormatLinePipe]
     }).compileComponents();
   }));
 

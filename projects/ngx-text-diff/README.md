@@ -17,13 +17,24 @@
 `selector: td-ngx-text-diff`
 
 ### Inputs
-| Input            | Type    | Required                         | Description                                                              |
-| ---------------- | ------- | -------------------------------- | ------------------------------------------------------------------------ |
-| left             | string  | Yes                              | First text to be compared                                                |
-| right            | string  | Yes                              | Second text to be compared                                               |
-| format           | type    | Optional, default: 'SideBySide'  | Possible values:<br> -'SideBySide'<br> -'LineByLine'                     |
+| Input          | Type              | Required                        | Description                                                                                     |
+| -------------- | ----------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| left           | string            | Yes                             | First text to be compared                                                                       |
+| right          | string            | Yes                             | Second text to be compared                                                                      |
+| diffContent    | Observable        | Optional                        | `DiffContent` observable                                                                   |
+| format         | `DiffTableFormat` | Optional, default: `SideBySide` | Possible values:<br> -`SideBySide`<br> -`LineByLine`                                            |
+| loading        | boolean           | Optional, default: `false`      | Possible values:<br> -`true`: shows an loading spinner.<br>- `false`: hides the loading spinner |
+| showBtnToolbar | boolean           | Optional, default: `true`       | Possible values:<br> -`true`: shows the format toolbar.<br>- `false`: hides the format toolbar  |
 
+### Custom Objects
+``` typescript
+export interface DiffContent {
+  leftContent: string;
+  rightContent: string;
+}
 
+export type DiffTableFormat = 'SideBySide' | 'LineByLine';
+```
 
 ## Usage
 1. Register the `NgxTextDiffModule` in a module, for example app module.
