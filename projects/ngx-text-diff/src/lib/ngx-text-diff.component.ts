@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DiffContent, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { Observable, Subscription } from 'rxjs';
   templateUrl: './ngx-text-diff.component.html',
   styleUrls: ['./ngx-text-diff.component.css']
 })
-export class NgxTextDiffComponent implements OnInit {
+export class NgxTextDiffComponent implements OnInit, OnDestroy {
   @Input() format: DiffTableFormat = 'SideBySide';
   @Input() left = '';
   @Input() right = '';
@@ -55,6 +55,12 @@ export class NgxTextDiffComponent implements OnInit {
       );
     }
     this.renderDiffs().then();
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscriptions) {
+      this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
   }
 
   showLinesDiffsChange(value: boolean) {
