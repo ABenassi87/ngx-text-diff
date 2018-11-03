@@ -1,5 +1,5 @@
 # ngx-text-diff
-- A simple text diff `component` to be used with Angular 6 and based on `google diff match patch` library.
+- A simple text diff `component` to be used with Angular and based on `google diff match patch` library.
 
 ## Dependencies
  - diff-match-patch : ^1.0.4
@@ -57,7 +57,7 @@ export class AppModule {}
 
 ## Build the NgxTextDiff module
 
-Run `ng build ngx-text-diff` to build the library. The build artifacts will be stored in the `dist/ngx-text-diff` directory. Use the `--prod` flag for a production build.
+Run `ng build ngx-text-diff` to build the library. The build artifacts will be stored in the `dist/ngx-text-diff` directory.
 
 ## Credits
 
