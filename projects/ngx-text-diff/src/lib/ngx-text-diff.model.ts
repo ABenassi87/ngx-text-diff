@@ -1,4 +1,4 @@
-export type DiffTableFormat = 'SideBySide' | 'LineByLine' | 'MergeView';
+export type DiffTableFormat = 'SideBySide' | 'LineByLine';
 export type SideDiff = 'both' | 'left' | 'right';
 
 export interface DiffTableFormatOption {
@@ -15,15 +15,21 @@ export interface DiffContent {
   rightContent: string;
 }
 
-export interface DiffTableRow {
-  lineNumberLeft?: number;
-  lineNumberRight?: number;
-  prefix?: string;
+export interface DiffPart {
   content: string;
-  belongTo?: SideDiff;
+  isDiff: boolean;
 }
 
-export interface DiffTableBothRow extends DiffTableRow {
-  prefixRight?: string;
-  contentRight?: string;
+export interface DiffLineResult {
+  lineNumber: number;
+  prefix: string;
+  lineContent: string;
+  lineDiffs: DiffPart[];
+}
+
+export interface DiffTableRowResult {
+  leftContent: DiffLineResult;
+  rightContent: DiffLineResult;
+  belongTo: SideDiff;
+  hasDiffs: boolean;
 }

@@ -20,7 +20,7 @@ deploy:
   provider: heroku
   api_key:
     secure: $HEROKU_AUTH_TOKEN
-  app: ngx-text-diff
+  app: ngx-text-diff-staging
   on:
     repo: ABenassi87/ngx-text-diff
-    branch: release-0.5.0
+    branch: staging
