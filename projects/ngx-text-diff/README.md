@@ -1,5 +1,5 @@
 # ngx-text-diff
-- A simple text diff `component` to be used with Angular 6 and based on `google diff match patch` library.
+- A simple text diff `component` to be used with Angular and based on `google diff match patch` library.
 
 ## Dependencies
  - diff-match-patch : ^1.0.4
@@ -17,13 +17,24 @@
 `selector: td-ngx-text-diff`
 
 ### Inputs
-| Input            | Type    | Required                         | Description                                                              |
-| ---------------- | ------- | -------------------------------- | ------------------------------------------------------------------------ |
-| left             | string  | Yes                              | First text to be compared                                                |
-| right            | string  | Yes                              | Second text to be compared                                               |
-| format           | type    | Optional, default: 'SideBySide'  | Possible values:<br> -'SideBySide'<br> -'LineByLine'                     |
+| Input          | Type              | Required                        | Description                                                                                     |
+| -------------- | ----------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| left           | string            | Yes                             | First text to be compared                                                                       |
+| right          | string            | Yes                             | Second text to be compared                                                                      |
+| diffContent    | Observable        | Optional                        | `DiffContent` observable                                                                   |
+| format         | `DiffTableFormat` | Optional, default: `SideBySide` | Possible values:<br> -`SideBySide`<br> -`LineByLine`                                            |
+| loading        | boolean           | Optional, default: `false`      | Possible values:<br> -`true`: shows an loading spinner.<br>- `false`: hides the loading spinner |
+| showBtnToolbar | boolean           | Optional, default: `true`       | Possible values:<br> -`true`: shows the format toolbar.<br>- `false`: hides the format toolbar  |
 
+### Custom Objects
+``` typescript
+export interface DiffContent {
+  leftContent: string;
+  rightContent: string;
+}
 
+export type DiffTableFormat = 'SideBySide' | 'LineByLine';
+```
 
 ## Usage
 1. Register the `NgxTextDiffModule` in a module, for example app module.
@@ -46,7 +57,7 @@ export class AppModule {}
 
 ## Build the NgxTextDiff module
 
-Run `ng build ngx-text-diff` to build the library. The build artifacts will be stored in the `dist/ngx-text-diff` directory. Use the `--prod` flag for a production build.
+Run `ng build ngx-text-diff` to build the library. The build artifacts will be stored in the `dist/ngx-text-diff` directory.
 
 ## Credits
 

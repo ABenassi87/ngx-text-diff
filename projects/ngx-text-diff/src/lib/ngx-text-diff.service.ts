@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Diff, DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch } from 'diff-match-patch';
-import { DiffTableRow } from './ngx-text-diff.model';
+import { DiffLineResult, DiffPart, DiffTableRowResult } from './ngx-text-diff.model';
 import { isEmpty, isNil } from './ngx-text-diff.utils';
 
 @Injectable({
@@ -17,15 +17,15 @@ export class NgxTextDiffService {
     this.diffParser = new diff_match_patch();
   }
 
-  getDiffs(left: string, right: string): Promise<DiffTableRow[]> {
-    return new Promise<DiffTableRow[]>((resolve, reject) => {
+  getDiffsByLines(left: string, right: string): Promise<DiffTableRowResult[]> {
+    return new Promise<DiffTableRowResult[]>((resolve, reject) => {
       const a = this.diffParser.diff_linesToChars_(left, right);
       const lineText1 = a.chars1;
       const lineText2 = a.chars2;
       const linesArray = a.lineArray;
       const diffs: Diff[] = this.diffParser.diff_main(lineText1, lineText2, true);
       this.diffParser.diff_charsToLines_(diffs, linesArray);
-      const rows: DiffTableRow[] = this.formatOutput(diffs, linesArray);
+      const rows: DiffTableRowResult[] = this.formatOutputNew(diffs, linesArray);
       if (!rows) {
         reject('Error');
       }
@@ -34,60 +34,164 @@ export class NgxTextDiffService {
     });
   }
 
-  private formatOutput(diffs: Diff[], lines: string[]): DiffTableRow[] {
+  private formatOutputNew(diffs: Diff[], lines?: string[]): DiffTableRowResult[] {
+    if (lines) {
+      return this.formatDiffsFromLines(diffs, lines);
+    }
+  }
+
+  private formatDiffsFromLines(diffs: Diff[], lines: string[]): DiffTableRowResult[] {
+    lines.splice(0, 1);
     let lineLeft = 1;
     let lineRight = 1;
-    const diffsRows = diffs.reduce((rows: DiffTableRow[], diff: Diff) => {
+    const diffRowsResult = diffs.reduce((rows: DiffTableRowResult[], diff: Diff) => {
       if (!rows) {
         rows = [];
       }
-      switch (diff[0]) {
-        case DIFF_EQUAL:
-          const commonValues = diff[1].split('\n');
-          commonValues.filter(val => !isNil(val) && !isEmpty(val)).forEach(val => {
-            const rTemp: DiffTableRow = {
-              content: val,
-              prefix: '',
-              lineNumberRight: lineRight,
-              lineNumberLeft: lineLeft,
-              belongTo: 'both'
-            };
-            lineRight = lineRight + 1;
-            lineLeft = lineLeft + 1;
-            rows.push(rTemp);
-          });
+      let diffValues = diff[1];
+      while (!isNil(diffValues) || !isEmpty(diffValues) || diffValues.length > 0) {
+        const findIndex = lines.findIndex(line => diffValues.includes(line));
+        if (findIndex >= 0) {
+          const line = lines[findIndex];
+          let leftDiffRow: DiffTableRowResult = null;
+          let rightDiffRow: DiffTableRowResult = null;
+          let leftContent: DiffLineResult = null;
+          let rightContent: DiffLineResult = null;
+          let rowTemp: DiffTableRowResult = null;
+          switch (diff[0]) {
+            case DIFF_EQUAL:
+              leftContent = {
+                lineNumber: lineLeft,
+                lineContent: line,
+                lineDiffs: [],
+                prefix: ''
+              };
+              rightContent = {
+                lineNumber: lineRight,
+                lineContent: line,
+                lineDiffs: [],
+                prefix: ''
+              };
+              rowTemp = {
+                leftContent,
+                rightContent,
+                belongTo: 'both',
+                hasDiffs: false
+              };
+              rows.push(rowTemp);
+              lineRight = lineRight + 1;
+              lineLeft = lineLeft + 1;
+              break;
+            case DIFF_INSERT:
+              leftDiffRow = rows.find(
+                row => row.leftContent && !row.rightContent && row.leftContent.lineNumber === lineRight && row.leftContent.prefix !== ''
+              );
+              rightContent = {
+                lineNumber: lineRight,
+                lineContent: line,
+                lineDiffs: [{ content: line, isDiff: true }],
+                prefix: '+'
+              };
+              if (leftDiffRow) {
+                leftDiffRow.rightContent = rightContent;
+                leftDiffRow.leftContent.lineDiffs = this.getDiffParts(
+                  leftDiffRow.leftContent.lineContent,
+                  leftDiffRow.rightContent.lineContent
+                );
+                leftDiffRow.rightContent.lineDiffs = this.getDiffParts(
+                  leftDiffRow.rightContent.lineContent,
+                  leftDiffRow.leftContent.lineContent
+                );
+                leftDiffRow.belongTo = 'both';
+              } else {
+                rows.push({
+                  leftContent: null,
+                  rightContent,
+                  hasDiffs: true,
+                  belongTo: 'right'
+                });
+              }
+              lineRight = lineRight + 1;
+              break;
+            case DIFF_DELETE:
+              rightDiffRow = rows.find(
+                row => !row.leftContent && row.rightContent && row.rightContent.lineNumber === lineLeft && row.rightContent.prefix !== ''
+              );
+              leftContent = {
+                lineNumber: lineLeft,
+                lineContent: line,
+                lineDiffs: [{ content: line, isDiff: true }],
+                prefix: '-'
+              };
+              if (rightDiffRow) {
+                rightDiffRow.leftContent = leftContent;
+                rightDiffRow.leftContent.lineDiffs = this.getDiffParts(
+                  rightDiffRow.leftContent.lineContent,
+                  rightDiffRow.rightContent.lineContent
+                );
+                rightDiffRow.rightContent.lineDiffs = this.getDiffParts(
+                  rightDiffRow.rightContent.lineContent,
+                  rightDiffRow.leftContent.lineContent
+                );
+                rightDiffRow.belongTo = 'both';
+              } else {
+                rows.push({
+                  leftContent,
+                  rightContent: null,
+                  hasDiffs: true,
+                  belongTo: 'left'
+                });
+              }
+              lineLeft = lineLeft + 1;
+              break;
+            default:
+              break;
+          }
+
+          diffValues = diffValues.replace(line, '');
+          lines.splice(findIndex, 1);
+        } else {
           break;
-        case DIFF_INSERT:
-          const insertValues = diff[1].split('\n');
-          insertValues.filter(val => !isNil(val) && !isEmpty(val)).forEach(val => {
-            const rRight: DiffTableRow = {
-              content: val,
-              prefix: '+',
-              lineNumberRight: lineRight,
-              belongTo: 'right'
-            };
-            lineRight = lineRight + 1;
-            rows.push(rRight);
-          });
-          break;
-        case DIFF_DELETE:
-          const deleteValues = diff[1].split('\n');
-          deleteValues.filter(val => !isNil(val) && !isEmpty(val)).forEach(val => {
-            const rLeft: DiffTableRow = {
-              content: val,
-              prefix: '-',
-              lineNumberLeft: lineLeft,
-              belongTo: 'left'
-            };
-            lineLeft = lineLeft + 1;
-            rows.push(rLeft);
-          });
-          break;
+        }
       }
 
       return rows;
     }, []);
 
-    return diffsRows;
+    return diffRowsResult;
+  }
+
+  private getDiffParts(value: string, compareValue: string): DiffPart[] {
+    const diffParts: DiffPart[] = [];
+    let i = 0;
+    let j = 0;
+    let shared = '';
+    let diff = '';
+
+    while (i < value.length) {
+      if (value[i] === compareValue[j] && j < compareValue.length) {
+        if (diff !== '') {
+          diffParts.push({ content: diff, isDiff: true });
+          diff = '';
+        }
+        shared += value[i];
+      } else {
+        if (shared !== '') {
+          diffParts.push({ content: shared, isDiff: false });
+          shared = '';
+        }
+        diff += value[i];
+      }
+      i++;
+      j++;
+    }
+
+    if (diff !== '') {
+      diffParts.push({ content: diff, isDiff: true });
+    } else if (shared !== '') {
+      diffParts.push({ content: shared, isDiff: false });
+    }
+
+    return diffParts;
   }
 }

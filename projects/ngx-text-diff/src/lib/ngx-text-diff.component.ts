@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { DiffContent, DiffTableBothRow, DiffTableFormat, DiffTableFormatOption, DiffTableRow } from './ngx-text-diff.model';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { DiffContent, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
 
@@ -8,19 +8,20 @@ import { Observable, Subscription } from 'rxjs';
   templateUrl: './ngx-text-diff.component.html',
   styleUrls: ['./ngx-text-diff.component.css']
 })
-export class NgxTextDiffComponent implements OnInit {
+export class NgxTextDiffComponent implements OnInit, OnDestroy {
   @Input() format: DiffTableFormat = 'SideBySide';
   @Input() left = '';
   @Input() right = '';
+  @Input() diffContent: Observable<DiffContent>;
   @Input() loading = false;
-  @Input() diffContentObservable$: Observable<DiffContent>;
+  @Input() showBtnToolbar = true;
   subscriptions: Subscription[] = [];
-  rows: DiffTableRow[] = [];
-  filteredRows: DiffTableRow[] = [];
-  leftRightRows: DiffTableBothRow[] = [];
-  filteredLeftRightRows: DiffTableBothRow[] = [];
+  tableRows: DiffTableRowResult[] = [];
+  filteredTableRows: DiffTableRowResult[] = [];
+  tableRowsLineByLine: DiffTableRowResult[] = [];
+  filteredTableRowsLineByLine: DiffTableRowResult[] = [];
   showLinesDiffs = false;
-  diffs = 0;
+  diffsCount = 0;
 
   formatOptions: DiffTableFormatOption[] = [
     {
@@ -42,27 +43,38 @@ export class NgxTextDiffComponent implements OnInit {
   constructor(private diff: NgxTextDiffService, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
-    if (this.diffContentObservable$) {
+    if (this.diffContent) {
       this.subscriptions.push(
-        this.diffContentObservable$.subscribe(content => {
+        this.diffContent.subscribe(content => {
           this.left = content.leftContent;
           this.right = content.rightContent;
-          this.renderDiffs();
-          this.cd.detectChanges();
+          this.renderDiffs().then(() => {
+            this.cd.detectChanges();
+          });
         })
       );
     }
-    this.renderDiffs();
+    this.renderDiffs().then();
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscriptions) {
+      this.subscriptions.forEach(subscription => subscription.unsubscribe());
+    }
   }
 
   showLinesDiffsChange(value: boolean) {
     this.showLinesDiffs = value;
     if (this.showLinesDiffs) {
-      this.filteredLeftRightRows = this.leftRightRows.filter(row => row.prefix === '-' || row.prefixRight === '+');
-      this.filteredRows = this.rows.filter(row => row.prefix === '-' || row.prefix === '+');
+      this.filteredTableRows = this.tableRows.filter(
+        row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
+      );
+      this.filteredTableRowsLineByLine = this.tableRowsLineByLine.filter(
+        row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
+      );
     } else {
-      this.filteredLeftRightRows = this.leftRightRows;
-      this.filteredRows = this.rows;
+      this.filteredTableRows = this.tableRows;
+      this.filteredTableRowsLineByLine = this.tableRowsLineByLine;
     }
   }
 
@@ -70,57 +82,52 @@ export class NgxTextDiffComponent implements OnInit {
     this.format = format;
   }
 
-  renderDiffs() {
-    this.loading = true;
-    this.leftRightRows = [];
-    this.rows = [];
-    this.diffs = 0;
-    this.diff.getDiffs(this.left, this.right).then((diffRows: DiffTableRow[]) => {
-      diffRows.forEach(row => {
-        switch (row.belongTo) {
-          case 'both':
-            this.leftRightRows.push({
-              lineNumberLeft: row.lineNumberLeft,
-              lineNumberRight: row.lineNumberRight,
-              prefix: row.prefix,
-              prefixRight: row.prefix,
-              content: row.content,
-              contentRight: row.content
-            });
-            break;
-          case 'left':
-            if (!this.leftRightRows.some(rowTemp => row.lineNumberLeft === rowTemp.lineNumberLeft)) {
-              const rightRow = diffRows.find(rowTemp => row.lineNumberLeft === rowTemp.lineNumberRight && rowTemp.belongTo === 'right');
-              this.leftRightRows.push({
-                lineNumberLeft: row.lineNumberLeft,
-                lineNumberRight: rightRow ? rightRow.lineNumberRight : null,
-                prefix: row.prefix,
-                prefixRight: rightRow ? rightRow.prefix : null,
-                content: row.content,
-                contentRight: rightRow ? rightRow.content : null
-              });
-            }
-            break;
-          case 'right':
-            if (!this.leftRightRows.some(rowTemp => row.lineNumberRight === rowTemp.lineNumberRight)) {
-              const leftRow = diffRows.find(rowTemp => row.lineNumberRight === rowTemp.lineNumberLeft && rowTemp.belongTo === 'left');
-              this.leftRightRows.push({
-                lineNumberLeft: leftRow ? leftRow.lineNumberLeft : null,
-                lineNumberRight: row.lineNumberRight,
-                prefix: leftRow ? leftRow.prefix : null,
-                prefixRight: row.prefix,
-                content: leftRow ? leftRow.content : null,
-                contentRight: row.content
-              });
-            }
-            break;
+  async renderDiffs() {
+    try {
+      this.loading = true;
+      this.diffsCount = 0;
+      this.tableRows = await this.diff.getDiffsByLines(this.left, this.right);
+      this.tableRowsLineByLine = this.tableRows.reduce((tableLineByLine: DiffTableRowResult[], row: DiffTableRowResult) => {
+        if (!tableLineByLine) {
+          tableLineByLine = [];
         }
-      });
-      this.rows = diffRows;
-      this.diffs = this.leftRightRows.filter(row => row.prefix === '-' || row.prefixRight === '+').length;
-      this.filteredLeftRightRows = this.leftRightRows;
-      this.filteredRows = this.rows;
+        if (row.hasDiffs) {
+          if (row.leftContent) {
+            tableLineByLine.push({
+              leftContent: row.leftContent,
+              rightContent: null,
+              belongTo: row.belongTo,
+              hasDiffs: true
+            });
+          }
+          if (row.rightContent) {
+            tableLineByLine.push({
+              leftContent: null,
+              rightContent: row.rightContent,
+              belongTo: row.belongTo,
+              hasDiffs: true
+            });
+          }
+        } else {
+          tableLineByLine.push(row);
+        }
+
+        return tableLineByLine;
+      }, []);
+      this.diffsCount = this.tableRows.filter(
+        row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
+      ).length;
+      this.filteredTableRows = this.tableRows;
+      this.filteredTableRowsLineByLine = this.tableRowsLineByLine;
       this.loading = false;
-    });
+    } catch (e) {}
+  }
+
+  trackTableRows(index, row: DiffTableRowResult) {
+    return row && row.leftContent ? row.leftContent.lineContent : row && row.rightContent ? row.rightContent.lineContent : undefined;
+  }
+
+  trackDiffs(index, diff: DiffPart) {
+    return diff && diff.content ? diff.content : undefined;
   }
 }
