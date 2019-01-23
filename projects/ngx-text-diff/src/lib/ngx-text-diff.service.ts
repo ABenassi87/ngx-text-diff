@@ -25,7 +25,7 @@ export class NgxTextDiffService {
       const linesArray = a.lineArray;
       const diffs: Diff[] = this.diffParser.diff_main(lineText1, lineText2, true);
       this.diffParser.diff_charsToLines_(diffs, linesArray);
-      const rows: DiffTableRowResult[] = this.formatOutputNew(diffs, linesArray);
+      const rows: DiffTableRowResult[] = this.formatOutput(diffs);
       if (!rows) {
         reject('Error');
       }
@@ -34,32 +34,31 @@ export class NgxTextDiffService {
     });
   }
 
-  private formatOutputNew(diffs: Diff[], lines?: string[]): DiffTableRowResult[] {
-    if (lines) {
-      return this.formatDiffsFromLines(diffs, lines);
-    }
-  }
-
-  private formatDiffsFromLines(diffs: Diff[], lines: string[]): DiffTableRowResult[] {
-    lines.splice(0, 1);
+  private formatOutput(diffs: Diff[]): DiffTableRowResult[] {
     let lineLeft = 1;
     let lineRight = 1;
-    const diffRowsResult = diffs.reduce((rows: DiffTableRowResult[], diff: Diff) => {
+    return diffs.reduce((rows: DiffTableRowResult[], diff: Diff) => {
       if (!rows) {
         rows = [];
       }
-      let diffValues = diff[1];
-      while (!isNil(diffValues) || !isEmpty(diffValues) || diffValues.length > 0) {
-        const findIndex = lines.findIndex(line => diffValues.includes(line));
-        if (findIndex >= 0) {
-          const line = lines[findIndex];
-          let leftDiffRow: DiffTableRowResult = null;
-          let rightDiffRow: DiffTableRowResult = null;
-          let leftContent: DiffLineResult = null;
-          let rightContent: DiffLineResult = null;
-          let rowTemp: DiffTableRowResult = null;
-          switch (diff[0]) {
-            case DIFF_EQUAL:
+      const diffType: number = diff[0];
+      const diffValue: string = diff[1];
+      let leftDiffRow: DiffTableRowResult = null;
+      let rightDiffRow: DiffTableRowResult = null;
+      let leftContent: DiffLineResult = null;
+      let rightContent: DiffLineResult = null;
+      let rowTemp: DiffTableRowResult = null;
+      switch (diffType) {
+        case DIFF_EQUAL: // 0
+          diffValue
+            .split('\n')
+            .filter((value, index, array) => {
+              if (index === array.length - 1) {
+                return !isEmpty(value);
+              }
+              return true;
+            })
+            .forEach(line => {
               leftContent = {
                 lineNumber: lineLeft,
                 lineContent: line,
@@ -81,39 +80,18 @@ export class NgxTextDiffService {
               rows.push(rowTemp);
               lineRight = lineRight + 1;
               lineLeft = lineLeft + 1;
-              break;
-            case DIFF_INSERT:
-              leftDiffRow = rows.find(
-                row => row.leftContent && !row.rightContent && row.leftContent.lineNumber === lineRight && row.leftContent.prefix !== ''
-              );
-              rightContent = {
-                lineNumber: lineRight,
-                lineContent: line,
-                lineDiffs: [{ content: line, isDiff: true }],
-                prefix: '+'
-              };
-              if (leftDiffRow) {
-                leftDiffRow.rightContent = rightContent;
-                leftDiffRow.leftContent.lineDiffs = this.getDiffParts(
-                  leftDiffRow.leftContent.lineContent,
-                  leftDiffRow.rightContent.lineContent
-                );
-                leftDiffRow.rightContent.lineDiffs = this.getDiffParts(
-                  leftDiffRow.rightContent.lineContent,
-                  leftDiffRow.leftContent.lineContent
-                );
-                leftDiffRow.belongTo = 'both';
-              } else {
-                rows.push({
-                  leftContent: null,
-                  rightContent,
-                  hasDiffs: true,
-                  belongTo: 'right'
-                });
+            });
+          break;
+        case DIFF_DELETE: // -1
+          diffValue
+            .split('\n')
+            .filter((value, index, array) => {
+              if (index === array.length - 1) {
+                return !isEmpty(value);
               }
-              lineRight = lineRight + 1;
-              break;
-            case DIFF_DELETE:
+              return true;
+            })
+            .forEach(line => {
               rightDiffRow = rows.find(
                 row => !row.leftContent && row.rightContent && row.rightContent.lineNumber === lineLeft && row.rightContent.prefix !== ''
               );
@@ -143,22 +121,52 @@ export class NgxTextDiffService {
                 });
               }
               lineLeft = lineLeft + 1;
-              break;
-            default:
-              break;
-          }
-
-          diffValues = diffValues.replace(line, '');
-          lines.splice(findIndex, 1);
-        } else {
+            });
           break;
-        }
+        case DIFF_INSERT: // 1
+          diffValue
+            .split('\n')
+            .filter((value, index, array) => {
+              if (index === array.length - 1) {
+                return !isEmpty(value);
+              }
+              return true;
+            })
+            .forEach(line => {
+              leftDiffRow = rows.find(
+                row => row.leftContent && !row.rightContent && row.leftContent.lineNumber === lineRight && row.leftContent.prefix !== ''
+              );
+              rightContent = {
+                lineNumber: lineRight,
+                lineContent: line,
+                lineDiffs: [{ content: line, isDiff: true }],
+                prefix: '+'
+              };
+              if (leftDiffRow) {
+                leftDiffRow.rightContent = rightContent;
+                leftDiffRow.leftContent.lineDiffs = this.getDiffParts(
+                  leftDiffRow.leftContent.lineContent,
+                  leftDiffRow.rightContent.lineContent
+                );
+                leftDiffRow.rightContent.lineDiffs = this.getDiffParts(
+                  leftDiffRow.rightContent.lineContent,
+                  leftDiffRow.leftContent.lineContent
+                );
+                leftDiffRow.belongTo = 'both';
+              } else {
+                rows.push({
+                  leftContent: null,
+                  rightContent,
+                  hasDiffs: true,
+                  belongTo: 'right'
+                });
+              }
+              lineRight = lineRight + 1;
+            });
+          break;
       }
-
       return rows;
     }, []);
-
-    return diffRowsResult;
   }
 
   private getDiffParts(value: string, compareValue: string): DiffPart[] {

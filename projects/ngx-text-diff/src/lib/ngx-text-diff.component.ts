@@ -43,18 +43,25 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
   constructor(private diff: NgxTextDiffService, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.loading = true;
     if (this.diffContent) {
       this.subscriptions.push(
         this.diffContent.subscribe(content => {
+          this.loading = true;
           this.left = content.leftContent;
           this.right = content.rightContent;
-          this.renderDiffs().then(() => {
-            this.cd.detectChanges();
-          });
+          this.renderDiffs()
+            .then(() => {
+              this.cd.detectChanges();
+              this.loading = false;
+            })
+            .catch(() => (this.loading = false));
         })
       );
     }
-    this.renderDiffs().then();
+    this.renderDiffs()
+      .then(() => (this.loading = false))
+      .catch(e => (this.loading = false));
   }
 
   ngOnDestroy(): void {
@@ -84,7 +91,6 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
 
   async renderDiffs() {
     try {
-      this.loading = true;
       this.diffsCount = 0;
       this.tableRows = await this.diff.getDiffsByLines(this.left, this.right);
       this.tableRowsLineByLine = this.tableRows.reduce((tableLineByLine: DiffTableRowResult[], row: DiffTableRowResult) => {
@@ -119,8 +125,9 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
       ).length;
       this.filteredTableRows = this.tableRows;
       this.filteredTableRowsLineByLine = this.tableRowsLineByLine;
-      this.loading = false;
-    } catch (e) {}
+    } catch (e) {
+      throw e;
+    }
   }
 
   trackTableRows(index, row: DiffTableRowResult) {

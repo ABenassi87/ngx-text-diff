@@ -1,31 +1,31 @@
-/*
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+/*import { TestBed, async } from '@angular/core/testing';
+import { AppComponent } from './app.component';
 
-import { HomeComponent } from './home.component';
-import { NgxTextDiffModule } from '../../../projects/ngx-text-diff/src/lib/ngx-text-diff.module';
-import { ComponentsModule } from '../components/components.module';
-import { CodeEditorComponent } from '../components/code-editor/code-editor.component';
-import { CommonModule } from '@angular/common';
-
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
-
+describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgxTextDiffModule, CommonModule, ComponentsModule, CodeEditorComponent],
-      declarations: [HomeComponent]
+      declarations: [
+        AppComponent
+      ],
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app).toBeTruthy();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it(`should have as title 'ngx-text-diff-app'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.debugElement.componentInstance;
+    expect(app.title).toEqual('ngx-text-diff-app');
   });
-});
-*/
+
+  it('should render title in a h1 tag', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('h1').textContent).toContain('Welcome to ngx-text-diff-app!');
+  });
+});*/
