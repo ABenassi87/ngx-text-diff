@@ -32,4 +32,15 @@ export interface DiffTableRowResult {
   rightContent: DiffLineResult;
   belongTo: SideDiff;
   hasDiffs: boolean;
+  numDiffs: number;
+}
+
+export interface DiffResults {
+  hasDiff: boolean;
+  diffsCount: number;
+  rowsWithDiff: {
+    leftLineNumber?: number;
+    rightLineNumber?: number;
+    numDiffs: number;
+  }[];
 }
