@@ -12,19 +12,32 @@
 `npm i ngx-text-diff`
 
 ## API
-`module: NgxTextDiffModule`<br>
-`component: NgxTextDiffComponent`<br>
+`module: NgxTextDiffModule`  
+`component: NgxTextDiffComponent`  
 `selector: td-ngx-text-diff`
 
 ### Inputs
-| Input          | Type              | Required                        | Description                                                                                     |
-| -------------- | ----------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
-| left           | string            | Yes                             | First text to be compared                                                                       |
-| right          | string            | Yes                             | Second text to be compared                                                                      |
-| diffContent    | Observable        | Optional                        | `DiffContent` observable                                                                   |
-| format         | `DiffTableFormat` | Optional, default: `SideBySide` | Possible values:<br> -`SideBySide`<br> -`LineByLine`                                            |
-| loading        | boolean           | Optional, default: `false`      | Possible values:<br> -`true`: shows an loading spinner.<br>- `false`: hides the loading spinner |
-| showBtnToolbar | boolean           | Optional, default: `true`       | Possible values:<br> -`true`: shows the format toolbar.<br>- `false`: hides the format toolbar  |
+| Input               | Type              | Required                        | Description                                                                                     |
+| --------------------| ----------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| left                | string            | Yes                             | First text to be compared                                                                       |
+| right               | string            | Yes                             | Second text to be compared                                                                      |
+| diffContent         | Observable        | Optional                        | `DiffContent` observable                                                                        |
+| format              | `DiffTableFormat` | Optional, default: `SideBySide` | Possible values:<br> -`SideBySide`<br> -`LineByLine`                                            |
+| loading             | boolean           | Optional, default: `false`      | Possible values:<br> -`true`: shows an loading spinner.<br>- `false`: hides the loading spinner |
+| hideMatchingLines   | boolean           | Optional, default: `false`      | Possible values:<br> -`true`: Only shows lines with differences.<br>- `false`: shows all lines  |
+| showToolbar         | boolean           | Optional, default: `true`       | Possible values:<br> -`true`: shows the toolbar.<br>- `false`: hides the format toolbar         |
+| showBtnToolbar      | boolean           | Optional, default: `true`       | Possible values:<br> -`true`: shows the format toolbar.<br>- `false`: hides the format toolbar  |
+| outerContainerClass | any               | Optional                        | `ngClass` object for the outer div                                                              |
+| outerContainerStyle | any               | Optional                        | `ngStyle` object for the outer style                                                            |
+| toolbarClass        | any               | Optional                        | `ngClass` object for the toolbar div                                                            |
+| toolbarStyle        | any               | Optional                        | `ngStyle` object for the toolbar style                                                          |
+| compareRowsClass    | any               | Optional                        | `ngClass` object for the div surrounding the table rows                                         |
+| compareRowsStyle    | any               | Optional                        | `ngStyle` object for the div surrounding the table rows                                         |
+
+### Output
+| Input               | Type              | Required                        | Description                                                                                     |
+| --------------------| ----------------- | ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| compareResults      | DiffResults       | Optional                        | Event fired when comparison is executed                                                         |
 
 ### Custom Objects
 ``` typescript
@@ -34,6 +47,16 @@ export interface DiffContent {
 }
 
 export type DiffTableFormat = 'SideBySide' | 'LineByLine';
+
+export interface DiffResults {
+  hasDiff: boolean;
+  diffsCount: number;
+  rowsWithDiff: {
+    leftLineNumber?: number;
+    rightLineNumber?: number;
+    numDiffs: number;
+  }[];
+}
 ```
 
 ## Usage

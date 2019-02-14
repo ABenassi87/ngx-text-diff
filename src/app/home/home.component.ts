@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { DiffResults } from '../../../projects/ngx-text-diff/src/lib/ngx-text-diff.model';
 
 export interface DiffContent {
   leftContent: string;
@@ -67,5 +68,9 @@ export class HomeComponent implements OnInit {
       default:
         break;
     }
+  }
+
+  onCompareResults(diffResults: DiffResults) {
+    console.log('diffResults', diffResults);
   }
 }

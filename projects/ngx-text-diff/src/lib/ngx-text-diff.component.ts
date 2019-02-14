@@ -1,26 +1,43 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { DiffContent, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult } from './ngx-text-diff.model';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { DiffContent, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult, DiffResults } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'td-ngx-text-diff',
   templateUrl: './ngx-text-diff.component.html',
-  styleUrls: ['./ngx-text-diff.component.css']
+  styleUrls: ['./ngx-text-diff.component.css'],
 })
 export class NgxTextDiffComponent implements OnInit, OnDestroy {
+  private _hideMatchingLines = false;
+
   @Input() format: DiffTableFormat = 'SideBySide';
   @Input() left = '';
   @Input() right = '';
   @Input() diffContent: Observable<DiffContent>;
   @Input() loading = false;
+  @Input() showToolbar = true;
   @Input() showBtnToolbar = true;
+  @Input()
+  get hideMatchingLines() {
+    return this._hideMatchingLines;
+  }
+
+  set hideMatchingLines(hide: boolean) {
+    this.hideMatchingLinesChanged(hide);
+  }
+  @Input() outerContainerClass: string;
+  @Input() outerContainerStyle: any;
+  @Input() toolbarClass: string;
+  @Input() toolbarStyle: any;
+  @Input() compareRowsClass: string;
+  @Input() compareRowsStyle: any;
+  @Output() compareResults = new EventEmitter<DiffResults>();
   subscriptions: Subscription[] = [];
   tableRows: DiffTableRowResult[] = [];
   filteredTableRows: DiffTableRowResult[] = [];
   tableRowsLineByLine: DiffTableRowResult[] = [];
   filteredTableRowsLineByLine: DiffTableRowResult[] = [];
-  showLinesDiffs = false;
   diffsCount = 0;
 
   formatOptions: DiffTableFormatOption[] = [
@@ -29,15 +46,15 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
       name: 'side-by-side',
       label: 'Side by Side',
       value: 'SideBySide',
-      icon: 'la-code'
+      icon: 'la-code',
     },
     {
       id: 'line-by-line',
       name: 'line-by-line',
       label: 'Line by Line',
       value: 'LineByLine',
-      icon: 'la-file-text'
-    }
+      icon: 'la-file-text',
+    },
   ];
 
   constructor(private diff: NgxTextDiffService, private cd: ChangeDetectorRef) {}
@@ -70,9 +87,9 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
     }
   }
 
-  showLinesDiffsChange(value: boolean) {
-    this.showLinesDiffs = value;
-    if (this.showLinesDiffs) {
+  hideMatchingLinesChanged(value: boolean) {
+    this._hideMatchingLines = value;
+    if (this.hideMatchingLines) {
       this.filteredTableRows = this.tableRows.filter(
         row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
       );
@@ -103,7 +120,8 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
               leftContent: row.leftContent,
               rightContent: null,
               belongTo: row.belongTo,
-              hasDiffs: true
+              hasDiffs: true,
+              numDiffs: row.numDiffs,
             });
           }
           if (row.rightContent) {
@@ -111,7 +129,8 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
               leftContent: null,
               rightContent: row.rightContent,
               belongTo: row.belongTo,
-              hasDiffs: true
+              hasDiffs: true,
+              numDiffs: row.numDiffs,
             });
           }
         } else {
@@ -120,14 +139,29 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
 
         return tableLineByLine;
       }, []);
-      this.diffsCount = this.tableRows.filter(
-        row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
-      ).length;
+      this.diffsCount = this.tableRows.filter(row => row.hasDiffs).length;
       this.filteredTableRows = this.tableRows;
       this.filteredTableRowsLineByLine = this.tableRowsLineByLine;
+      this.emitCompareResultsEvent();
     } catch (e) {
       throw e;
     }
+  }
+
+  emitCompareResultsEvent() {
+    const diffResults: DiffResults = {
+      hasDiff: this.diffsCount > 0,
+      diffsCount: this.diffsCount,
+      rowsWithDiff: this.tableRows
+        .filter(row => row.hasDiffs)
+        .map(row => ({
+          leftLineNumber: row.leftContent ? row.leftContent.lineNumber : null,
+          rightLineNumber: row.rightContent ? row.rightContent.lineNumber : null,
+          numDiffs: row.numDiffs,
+        })),
+    };
+
+    this.compareResults.next(diffResults);
   }
 
   trackTableRows(index, row: DiffTableRowResult) {

@@ -75,7 +75,8 @@ export class NgxTextDiffService {
                 leftContent,
                 rightContent,
                 belongTo: 'both',
-                hasDiffs: false
+                hasDiffs: false,
+                numDiffs: 0,
               };
               rows.push(rowTemp);
               lineRight = lineRight + 1;
@@ -112,12 +113,14 @@ export class NgxTextDiffService {
                   rightDiffRow.leftContent.lineContent
                 );
                 rightDiffRow.belongTo = 'both';
+                rightDiffRow.numDiffs = this.countDiffs(rightDiffRow);
               } else {
                 rows.push({
                   leftContent,
                   rightContent: null,
                   hasDiffs: true,
-                  belongTo: 'left'
+                  belongTo: 'left',
+                  numDiffs: 1,
                 });
               }
               lineLeft = lineLeft + 1;
@@ -153,12 +156,14 @@ export class NgxTextDiffService {
                   leftDiffRow.leftContent.lineContent
                 );
                 leftDiffRow.belongTo = 'both';
+                leftDiffRow.numDiffs = this.countDiffs(leftDiffRow);
               } else {
                 rows.push({
                   leftContent: null,
                   rightContent,
                   hasDiffs: true,
-                  belongTo: 'right'
+                  belongTo: 'right',
+                  numDiffs: 1,
                 });
               }
               lineRight = lineRight + 1;
@@ -167,6 +172,17 @@ export class NgxTextDiffService {
       }
       return rows;
     }, []);
+  }
+
+  private countDiffs(result: DiffTableRowResult): number {
+    let diffCount = 0;
+    if (result.leftContent) {
+      diffCount += result.leftContent.lineDiffs.filter(diff => diff.isDiff).length;
+    }
+    if (result.leftContent) {
+      diffCount += result.rightContent.lineDiffs.filter(diff => diff.isDiff).length;
+    }
+    return diffCount;
   }
 
   private getDiffParts(value: string, compareValue: string): DiffPart[] {
