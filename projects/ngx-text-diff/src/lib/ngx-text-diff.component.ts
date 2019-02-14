@@ -9,6 +9,8 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./ngx-text-diff.component.css'],
 })
 export class NgxTextDiffComponent implements OnInit, OnDestroy {
+  private _hideMatchingLines = false;
+
   @Input() format: DiffTableFormat = 'SideBySide';
   @Input() left = '';
   @Input() right = '';
@@ -16,7 +18,14 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
   @Input() loading = false;
   @Input() showToolbar = true;
   @Input() showBtnToolbar = true;
-  @Input() hideMatchingLines = false;
+  @Input()
+  get hideMatchingLines() {
+    return this._hideMatchingLines;
+  }
+
+  set hideMatchingLines(hide: boolean) {
+    this.hideMatchingLinesChanged(hide);
+  }
   @Input() outerContainerClass: string;
   @Input() outerContainerStyle: any;
   @Input() toolbarClass: string;
@@ -79,7 +88,7 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
   }
 
   hideMatchingLinesChanged(value: boolean) {
-    this.hideMatchingLines = value;
+    this._hideMatchingLines = value;
     if (this.hideMatchingLines) {
       this.filteredTableRows = this.tableRows.filter(
         row => (row.leftContent && row.leftContent.prefix === '-') || (row.rightContent && row.rightContent.prefix === '+')
@@ -143,11 +152,13 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
     const diffResults: DiffResults = {
       hasDiff: this.diffsCount > 0,
       diffsCount: this.diffsCount,
-      rowsWithDiff: this.tableRows.filter(row => row.hasDiffs).map(row => ({
-        leftLineNumber: row.leftContent ? row.leftContent.lineNumber : null,
-        rightLineNumber: row.rightContent ? row.rightContent.lineNumber : null,
-        numDiffs: row.numDiffs,
-      }))
+      rowsWithDiff: this.tableRows
+        .filter(row => row.hasDiffs)
+        .map(row => ({
+          leftLineNumber: row.leftContent ? row.leftContent.lineNumber : null,
+          rightLineNumber: row.rightContent ? row.rightContent.lineNumber : null,
+          numDiffs: row.numDiffs,
+        })),
     };
 
     this.compareResults.next(diffResults);
