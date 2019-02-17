@@ -3,8 +3,8 @@
 
   <div [ngClass]="toolbarClass" [ngStyle]="toolbarStyle" *ngIf="showToolbar">
     <div class="td-toolbar-show-diff">
-      <label class="td-checkbox-container"
-        >Show Lines with Diffs ({{ diffsCount }})
+      <label class="td-checkbox-container">
+        Only Show Lines with Differences ({{ diffsCount }})
         <input type="checkbox" id="showDiffs" [ngModel]="hideMatchingLines" (ngModelChange)="hideMatchingLinesChanged($event)" />
         <span class="checkmark"></span>
       </label>
@@ -27,7 +27,8 @@
   </div>
 
   <div class="td-table-wrapper" [ngClass]="compareRowsClass" [ngStyle]="compareRowsStyle">
-    <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'">
+    <!-- Right side-by-side -->
+    <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'" id="td-left-compare-container" tdContainer cdkScrollable>
       <table class="td-table">
         <tbody>
           <tr *ngFor="let row of filteredTableRows; trackBy: trackTableRows">
@@ -66,7 +67,8 @@
         </tbody>
       </table>
     </div>
-    <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'">
+    <!-- Left side-by-side -->
+    <div class="td-table-container side-by-side" *ngIf="format === 'SideBySide'" id="td-right-compare-container" tdContainer cdkScrollable>
       <table class="td-table">
         <tbody>
           <tr *ngFor="let row of filteredTableRows; trackBy: trackTableRows">
@@ -105,6 +107,7 @@
         </tbody>
       </table>
     </div>
+    <!-- Line By Line - combined table -->
     <div class="td-table-container line-by-line" *ngIf="format === 'LineByLine'">
       <table class="td-table">
         <tbody>

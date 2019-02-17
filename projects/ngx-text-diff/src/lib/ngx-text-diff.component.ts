@@ -1,16 +1,29 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  EventEmitter,
+  ViewChildren,
+  QueryList,
+  AfterViewInit
+} from '@angular/core';
 import { DiffContent, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult, DiffResults } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
+import { ContainerDirective } from './ngx-text-diff-container.directive';
+import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'td-ngx-text-diff',
   templateUrl: './ngx-text-diff.component.html',
   styleUrls: ['./ngx-text-diff.component.css'],
 })
-export class NgxTextDiffComponent implements OnInit, OnDestroy {
+export class NgxTextDiffComponent implements OnInit, AfterViewInit, OnDestroy {
   private _hideMatchingLines = false;
-
+  @ViewChildren(ContainerDirective) containers: QueryList<ContainerDirective>;
   @Input() format: DiffTableFormat = 'SideBySide';
   @Input() left = '';
   @Input() right = '';
@@ -32,6 +45,7 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
   @Input() toolbarStyle: any;
   @Input() compareRowsClass: string;
   @Input() compareRowsStyle: any;
+  @Input() synchronizeScrolling = true;
   @Output() compareResults = new EventEmitter<DiffResults>();
   subscriptions: Subscription[] = [];
   tableRows: DiffTableRowResult[] = [];
@@ -57,7 +71,7 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private diff: NgxTextDiffService, private cd: ChangeDetectorRef) {}
+  constructor(private scrollService: ScrollDispatcher, private diff: NgxTextDiffService, private cd: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.loading = true;
@@ -79,6 +93,10 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
     this.renderDiffs()
       .then(() => (this.loading = false))
       .catch(e => (this.loading = false));
+  }
+
+  ngAfterViewInit() {
+    this.initScrollListener();
   }
 
   ngOnDestroy(): void {
@@ -170,5 +188,20 @@ export class NgxTextDiffComponent implements OnInit, OnDestroy {
 
   trackDiffs(index, diff: DiffPart) {
     return diff && diff.content ? diff.content : undefined;
+  }
+
+  private initScrollListener() {
+    this.subscriptions.push(this.scrollService.scrolled().subscribe((scrollableEv: CdkScrollable) => {
+      if (scrollableEv && this.synchronizeScrolling) {
+        const scrollableId = scrollableEv.getElementRef().nativeElement.id;
+        const nonScrolledContainer: ContainerDirective = this.containers.find(container => container.id !== scrollableId);
+        if (nonScrolledContainer) {
+          nonScrolledContainer.element.scrollTo({
+            top: scrollableEv.measureScrollOffset('top'),
+            left: scrollableEv.measureScrollOffset('left'),
+          });
+        }
+      }
+    }));
   }
 }
