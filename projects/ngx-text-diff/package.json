@@ -1,13 +1,31 @@
 {
   "name": "ngx-text-diff",
-  "version": "0.0.1",
+  "version": "0.5.5",
+  "description": "A Text Diff component for Angular.",
+  "keywords": [
+    "Angular",
+    "Library",
+    "Google",
+    "Diff"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Alfredo Benassi",
+    "email": "alfrebenassi@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ABenassi87/ngx-text-diff.git"
+  },
+  "homepage": "https://ngx-text-diff.herokuapp.com/home",
   "dependencies": {
     "diff-match-patch": "^1.0.4"
   },
   "peerDependencies": {
-    "@angular/common": ">=6.0.0 <7.0.0",
-    "@angular/core": "^>=6.0.0 <7.0.0",
-    "@angular/forms": "^>=6.0.0 <7.0.0",
+    "@angular/common": ">=6.0.0",
+    "@angular/core": "^>=6.0.0",
+    "@angular/forms": "^>=6.0.0",
+    "@angular/cdk": "^>=6.0.0",
     "rxjs": "~6.3.3"
   }
 }

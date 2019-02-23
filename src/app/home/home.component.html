@@ -32,10 +32,15 @@
         <button type="submit" (click)="submitComparison()" class="btn btn-primary">Compare</button>
       </form>
       <div *ngIf="submitted">
-        <td-ngx-text-diff [left]="content.leftContent"
-                        [right]="content.rightContent"
-                        [loading]="!submitted"
-                        [diffContentObservable$]="contentObservable$">
+        <td-ngx-text-diff
+          [left]="content.leftContent"
+          [right]="content.rightContent"
+          [loading]="!submitted"
+          [diffContent]="contentObservable$"
+          [synchronizeScrolling]="true"
+          [compareRowsStyle]="{'max-height': '500px', 'overflow': 'auto'}"
+          (compareResults)="onCompareResults($event)"
+        >
         </td-ngx-text-diff>
       </div>
     </div>
