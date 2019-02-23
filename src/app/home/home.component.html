@@ -37,6 +37,7 @@
           [right]="content.rightContent"
           [loading]="!submitted"
           [diffContent]="contentObservable$"
+          [synchronizeScrolling]="true"
           [compareRowsStyle]="{'max-height': '500px', 'overflow': 'auto'}"
           (compareResults)="onCompareResults($event)"
         >
