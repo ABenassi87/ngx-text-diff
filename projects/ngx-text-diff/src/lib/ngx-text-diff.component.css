@@ -45,6 +45,13 @@
 }
 
 .line-number-col {
+  position: relative; /* I am the fallback */
+
+  /* Give it everything you got! (use an auto prefixer...) */
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  top: auto;
   border-right: 1px solid #ddd;
   color: #999;
   text-align: right;
