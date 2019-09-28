@@ -8,13 +8,14 @@ import {
   EventEmitter,
   ViewChildren,
   QueryList,
-  AfterViewInit
+  AfterViewInit,
 } from '@angular/core';
 import { DiffContent, DiffPart, DiffTableFormat, DiffTableFormatOption, DiffTableRowResult, DiffResults } from './ngx-text-diff.model';
 import { NgxTextDiffService } from './ngx-text-diff.service';
 import { Observable, Subscription } from 'rxjs';
 import { ContainerDirective } from './ngx-text-diff-container.directive';
-import { ScrollDispatcher, CdkScrollable } from '@angular/cdk/scrolling';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/overlay';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'td-ngx-text-diff',
@@ -191,17 +192,31 @@ export class NgxTextDiffComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initScrollListener() {
-    this.subscriptions.push(this.scrollService.scrolled().subscribe((scrollableEv: CdkScrollable) => {
-      if (scrollableEv && this.synchronizeScrolling) {
-        const scrollableId = scrollableEv.getElementRef().nativeElement.id;
-        const nonScrolledContainer: ContainerDirective = this.containers.find(container => container.id !== scrollableId);
-        if (nonScrolledContainer) {
-          nonScrolledContainer.element.scrollTo({
-            top: scrollableEv.measureScrollOffset('top'),
-            left: scrollableEv.measureScrollOffset('left'),
-          });
-        }
-      }
-    }));
+    this.subscriptions.push(
+      this.scrollService
+        .scrolled()
+        .pipe(filter((scrollable: CdkScrollable) => !!scrollable))
+        .subscribe((scrollable: CdkScrollable) => {
+          const left = scrollable.measureScrollOffset('left');
+          const top = scrollable.measureScrollOffset('top');
+
+          Array.from(this.scrollService.scrollContainers.keys())
+            .filter(otherScrollable => otherScrollable && otherScrollable !== scrollable)
+            .forEach(otherScrollable => {
+              let options = null;
+              if (otherScrollable.measureScrollOffset('left') !== left) {
+                options = { left };
+              }
+
+              if (otherScrollable.measureScrollOffset('top') !== top) {
+                options = { top, ...options };
+              }
+
+              if (!!options) {
+                otherScrollable.scrollTo(options);
+              }
+            });
+        })
+    );
   }
 }
