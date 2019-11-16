@@ -12,7 +12,7 @@ import {
   NgZone,
   OnDestroy,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Editor, EditorChangeLinkedList, EditorFromTextArea, ScrollInfo } from 'codemirror';
@@ -34,11 +34,11 @@ declare var require: any;
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => CodeEditorComponent),
-      multi: true
-    }
+      multi: true,
+    },
   ],
   preserveWhitespaces: false,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CodeEditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, DoCheck {
   /* class applied to the created textarea */
@@ -66,7 +66,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy, ControlVal
   @Output() focusChange = new EventEmitter<boolean>();
   /* called when the editor is scrolled */
   @Output() scroll = new EventEmitter<ScrollInfo>();
-  @ViewChild('ref') ref: ElementRef;
+  @ViewChild('ref', { static: true }) ref: ElementRef;
   value = '';
   disabled = false;
   isFocused = false;
