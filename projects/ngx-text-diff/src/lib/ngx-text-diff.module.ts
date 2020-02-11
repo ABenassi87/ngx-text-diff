@@ -5,10 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { LoaderSpinnerComponent } from './loader-spinner/loader-spinner.component';
 import { FormatLinePipe } from './format-line.pipe';
 import { ContainerDirective } from './ngx-text-diff-container.directive';
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ScrollDispatchModule],
+  imports: [CommonModule, FormsModule, ScrollingModule],
   declarations: [NgxTextDiffComponent, LoaderSpinnerComponent, FormatLinePipe, ContainerDirective],
   exports: [NgxTextDiffComponent]
 })
