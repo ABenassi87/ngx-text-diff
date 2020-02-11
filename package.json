@@ -33,7 +33,7 @@
     "@angular/platform-browser": "^7.2.1",
     "@angular/platform-browser-dynamic": "^7.2.1",
     "@angular/router": "^7.2.1",
-    "bootstrap": "^4.2.1",
+    "bootstrap": "^4.3.1",
     "codemirror": "^5.43.0",
     "copyfiles": "^2.1.0",
     "core-js": "^2.6.3",
