@@ -23,7 +23,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^9.1.1",
-    "@angular/cdk": "^8.2.3",
+    "@angular/cdk": "^9.2.0",
     "@angular/common": "^9.1.1",
     "@angular/compiler": "^9.1.1",
     "@angular/core": "^9.1.1",
@@ -38,7 +38,7 @@
     "diff-match-patch": "^1.0.4",
     "express": "^4.17.1",
     "path": "^0.12.7",
-    "rxjs": "~6.5.3",
+    "rxjs": "~6.5.5",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },
