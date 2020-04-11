@@ -8,7 +8,7 @@
     "build_report": "ng build --prod --stats-json",
     "test": "echo 1",
     "lint": "ng lint",
-    "postinstall": "ng build --prod",
+    /*"postinstall": "ng build --prod",*/
     "e2e": "ng e2e",
     "build_lib": "ng build ngx-text-diff",
     "copy-license": "copyfiles ./projects/ngx-text-diff/LICENSE ./dist/ngx-text-diff",
