@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  DoCheck,
   ElementRef,
   EventEmitter,
   forwardRef,
@@ -15,7 +14,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Editor, EditorChangeLinkedList, EditorFromTextArea, ScrollInfo } from 'codemirror';
+import { Editor, EditorChangeLinkedList, EditorConfiguration, EditorFromTextArea, ScrollInfo } from 'codemirror';
 
 function normalizeLineEndings(str: string) {
   if (!str) {
@@ -40,7 +39,7 @@ declare var require: any;
   preserveWhitespaces: false,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodeEditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor, DoCheck {
+export class CodeEditorComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
   /* class applied to the created textarea */
   @Input() className = '';
   /* name applied to the created textarea */
@@ -95,18 +94,18 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy, ControlVal
       this.codeMirror.setValue(this.value);
     });
   }
-  ngDoCheck() {
+  /*ngDoCheck() {
     if (!this._differ) {
       return;
     }
     // check options have not changed
     const changes = this._differ.diff(this._options);
     if (changes) {
-      changes.forEachChangedItem(option => this.setOptionIfChanged(option.key, option.currentValue));
+      changes.forEachChangedItem((option: KeyValueChangeRecord<any, any>) => this.setOptionIfChanged(option.key, option.currentValue));
       changes.forEachAddedItem(option => this.setOptionIfChanged(option.key, option.currentValue));
       changes.forEachRemovedItem(option => this.setOptionIfChanged(option.key, option.currentValue));
     }
-  }
+  }*/
   ngOnDestroy() {
     // is there a lighter-weight way to remove the cm instance?
     if (this.codeMirror) {
@@ -119,7 +118,7 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy, ControlVal
       this.onChange(this.value);
     }
   }
-  setOptionIfChanged(optionName: string, newValue: any) {
+  setOptionIfChanged(optionName: keyof EditorConfiguration, newValue: any) {
     if (!this.codeMirror) {
       return;
     }
