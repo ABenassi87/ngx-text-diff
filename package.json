@@ -17,8 +17,8 @@
     "package": "npm run build_lib && npm run copy-files && npm run npm_pack"
   },
   "engines": {
-    "node": "8.11.3",
-    "npm": "6.1.0"
+    "node": "12.16.2",
+    "npm": "6.12.0"
   },
   "private": true,
   "dependencies": {
