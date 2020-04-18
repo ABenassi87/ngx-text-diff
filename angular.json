@@ -123,8 +123,8 @@
           "options": {
             "tsConfig": "projects/ngx-text-diff/tsconfig.lib.json",
             "project": "projects/ngx-text-diff/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/ngx-text-diff/tsconfig.lib.prod.json"
             }

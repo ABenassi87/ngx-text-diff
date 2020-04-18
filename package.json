@@ -10,7 +10,7 @@
     "lint": "ng lint",
     "postinstall": "ng build --prod",
     "e2e": "ng e2e",
-    "build_lib": "ng build ngx-text-diff",
+    "build_lib": "ng build ngx-text-diff --prod",
     "copy-license": "copyfiles ./projects/ngx-text-diff/LICENSE ./dist/ngx-text-diff",
     "copy-readme": "copyfiles ./projects/ngx-text-diff/README.md ./dist/ngx-text-diff",
     "copy-files": "npm run copy-license && npm run copy-readme",

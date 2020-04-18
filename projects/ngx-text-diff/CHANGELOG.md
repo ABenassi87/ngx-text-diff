@@ -1,4 +1,5 @@
-## NgxTextDiff - v0.5.5
+## NgxTextDiff - v0.6.0
+* Added support for Angular 9
 
 ## NgxTextDiff - v0.5.4
 * Allowed overriding CSS and allowed user to pass in classes or styles (#18).
