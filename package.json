@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
-    "build": "ng build",
+    "build": "ng build --prod",
     "build_report": "ng build --prod --stats-json",
     "test": "echo 1",
     "lint": "ng lint",
