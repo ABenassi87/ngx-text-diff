@@ -8,7 +8,7 @@
     "build_report": "ng build --prod --stats-json",
     "test": "echo 1",
     "lint": "ng lint",
-    "postinstall": "ng build --prod",
+    "postinstall": "ngcc",
     "e2e": "ng e2e",
     "build_lib": "ng build ngx-text-diff --prod",
     "copy-license": "copyfiles ./projects/ngx-text-diff/LICENSE ./dist/ngx-text-diff",
@@ -24,7 +24,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^9.1.2",
-    "@angular/cdk": "^9.2.0",
+    "@angular/cdk": "^9.2.1",
     "@angular/common": "^9.1.2",
     "@angular/compiler": "^9.1.2",
     "@angular/core": "^9.1.2",
