@@ -1,0 +1,99 @@
+.td-table-container {
+  grid-column: 1 / 2;
+  grid-row: 2;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.td-table-wrapper {
+  display: flex;
+  width: 200%;
+}
+
+.td-table {
+  border: 1px solid darkgray;
+  max-height: 50vh;
+  width: 100%;
+  max-width: 100%;
+}
+
+.fit-column {
+  width: 1px;
+  white-space: nowrap;
+}
+
+.line-number-col {
+  position: relative; /* I am the fallback */
+
+  /* Give it everything you got! (use an auto prefixer...) */
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  top: auto;
+  border-right: 1px solid #ddd;
+  color: #999;
+  text-align: right;
+  background-color: #f7f7f7;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 87.5%;
+}
+
+.line-number-col-left {
+  color: #999;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: right;
+  background-color: #f7f7f7;
+  font-size: 87.5%;
+}
+
+.insert-row,
+.insert-row > .line-number-col {
+  background-color: #dfd;
+  border-color: #b4e2b4;
+}
+
+.delete-row,
+.delete-row > .line-number-col {
+  background-color: #fee8e9;
+  border-color: #e9aeae;
+}
+
+.empty-row {
+  background-color: #f7f7f7;
+  height: 24px;
+}
+
+.td-table td {
+  border-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  white-space: nowrap;
+  max-width: 50%;
+}
+
+pre {
+  margin-bottom: 0;
+}
+
+td.content-col {
+  padding: 0;
+  margin: 0;
+  line-height: 24px;
+}
+
+td.prefix-col {
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 24px;
+}
+
+.insert-row > .highlight {
+  background-color: #acf2bd !important;
+}
+
+.delete-row > .highlight {
+  background-color: #fdb8c0 !important;
+}

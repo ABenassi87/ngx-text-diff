@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Diff, DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch } from 'diff-match-patch';
-import { DiffLineResult, DiffPart, DiffTableRowResult } from './ngx-text-diff.model';
+import { DiffLineResult, DiffPart, DiffTableLineByLine, DiffTableRowResult, DiffTableSideBySide } from './ngx-text-diff.model';
 import { isEmpty, isNil } from './ngx-text-diff.utils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NgxTextDiffService {
   diffParser: diff_match_patch;
@@ -17,21 +17,19 @@ export class NgxTextDiffService {
     this.diffParser = new diff_match_patch();
   }
 
-  getDiffsByLines(left: string, right: string): Promise<DiffTableRowResult[]> {
-    return new Promise<DiffTableRowResult[]>((resolve, reject) => {
-      const a = this.diffParser.diff_linesToChars_(left, right);
-      const lineText1 = a.chars1;
-      const lineText2 = a.chars2;
-      const linesArray = a.lineArray;
-      const diffs: Diff[] = this.diffParser.diff_main(lineText1, lineText2, true);
-      this.diffParser.diff_charsToLines_(diffs, linesArray);
-      const rows: DiffTableRowResult[] = this.formatOutput(diffs);
-      if (!rows) {
-        reject('Error');
-      }
+  async getDiffsByLines(left: string, right: string): Promise<DiffTableRowResult[]> {
+    const a = this.diffParser.diff_linesToChars_(left, right);
+    const lineText1 = a.chars1;
+    const lineText2 = a.chars2;
+    const linesArray = a.lineArray;
+    const diffs: Diff[] = this.diffParser.diff_main(lineText1, lineText2, true);
+    this.diffParser.diff_charsToLines_(diffs, linesArray);
+    const rows: DiffTableRowResult[] = this.formatOutput(diffs);
+    if (!rows) {
+      throw new Error('Error');
+    }
 
-      resolve(rows);
-    });
+    return rows;
   }
 
   private formatOutput(diffs: Diff[]): DiffTableRowResult[] {
@@ -63,13 +61,13 @@ export class NgxTextDiffService {
                 lineNumber: lineLeft,
                 lineContent: line,
                 lineDiffs: [],
-                prefix: ''
+                prefix: '',
               };
               rightContent = {
                 lineNumber: lineRight,
                 lineContent: line,
                 lineDiffs: [],
-                prefix: ''
+                prefix: '',
               };
               rowTemp = {
                 leftContent,
@@ -100,7 +98,7 @@ export class NgxTextDiffService {
                 lineNumber: lineLeft,
                 lineContent: line,
                 lineDiffs: [{ content: line, isDiff: true }],
-                prefix: '-'
+                prefix: '-',
               };
               if (rightDiffRow) {
                 rightDiffRow.leftContent = leftContent;
@@ -143,7 +141,7 @@ export class NgxTextDiffService {
                 lineNumber: lineRight,
                 lineContent: line,
                 lineDiffs: [{ content: line, isDiff: true }],
-                prefix: '+'
+                prefix: '+',
               };
               if (leftDiffRow) {
                 leftDiffRow.rightContent = rightContent;
@@ -179,7 +177,7 @@ export class NgxTextDiffService {
     if (result.leftContent) {
       diffCount += result.leftContent.lineDiffs.filter(diff => diff.isDiff).length;
     }
-    if (result.leftContent) {
+    if (result.rightContent) {
       diffCount += result.rightContent.lineDiffs.filter(diff => diff.isDiff).length;
     }
     return diffCount;
@@ -217,5 +215,60 @@ export class NgxTextDiffService {
     }
 
     return diffParts;
+  }
+
+  getSideBySide(rows: DiffTableRowResult[], onlyDiffs = false): DiffTableSideBySide {
+    return rows
+      .filter(row => !onlyDiffs || row.hasDiffs)
+      .reduce(
+        (temp: DiffTableSideBySide, row: DiffTableRowResult) => {
+          temp.left.push(row.leftContent);
+          temp.right.push(row.rightContent);
+
+          return temp;
+        },
+        { left: [], right: [] }
+      );
+  }
+
+  getLineByLine(rows: DiffTableRowResult[], onlyDiffs = false): DiffTableLineByLine {
+    return rows
+      .filter(row => !onlyDiffs || row.hasDiffs)
+      .reduce(
+        (temp: DiffTableLineByLine, row: DiffTableRowResult) => {
+          const { leftContent, rightContent, hasDiffs } = row;
+          if (!hasDiffs) {
+            temp.rows.push({
+              lineNumber: leftContent?.lineNumber,
+              lineNumberRight: rightContent?.lineNumber,
+              lineContent: leftContent?.lineContent,
+              prefix: leftContent?.prefix,
+              lineDiffs: [],
+            });
+          } else {
+            if (!!leftContent) {
+              temp.rows.push({
+                lineNumber: leftContent.lineNumber,
+                lineNumberRight: -1,
+                lineContent: leftContent.lineContent,
+                prefix: leftContent.prefix,
+                lineDiffs: leftContent.lineDiffs,
+              });
+            }
+            if (!!rightContent) {
+              temp.rows.push({
+                lineNumber: -1,
+                lineNumberRight: rightContent.lineNumber,
+                lineContent: rightContent.lineContent,
+                prefix: rightContent.prefix,
+                lineDiffs: rightContent.lineDiffs,
+              });
+            }
+          }
+
+          return temp;
+        },
+        { rows: [] }
+      );
   }
 }

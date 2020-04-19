@@ -1,0 +1,56 @@
+<div class="td-table-container" [id]="id" tdContainer cdkScrollable>
+  <table cdk-table class="td-table" [dataSource]="data" [trackBy]="trackTableRows">
+    <!-- Line Number Column -->
+    <ng-container cdkColumnDef="lineNumber">
+      <th cdk-header-cell *cdkHeaderCellDef>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"
+          class="fit-column line-number-col"
+          [class.delete-row]="row?.prefix === '-'"
+          [class.insert-row]="row?.prefix === '+'"
+          [class.empty-row]="!row?.lineContent"
+      >
+        {{ row?.lineNumber | lineNumber }}
+      </td>
+    </ng-container>
+    <!-- Prefix Column -->
+    <ng-container cdkColumnDef="prefix">
+      <th cdk-header-cell *cdkHeaderCellDef>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"
+          class="fit-column prefix-col"
+          [class.delete-row]="row?.prefix === '-'"
+          [class.insert-row]="row?.prefix === '+'"
+          [class.empty-row]="!row?.lineContent"
+      >
+        {{ row?.prefix | linePrefix }}
+      </td>
+    </ng-container>
+    <!-- Line Content Column -->
+    <ng-container cdkColumnDef="lineContent">
+      <th cdk-header-cell *cdkHeaderCellDef>
+      </th>
+      <td cdk-cell *cdkCellDef="let row"
+          class="content-col"
+          [class.delete-row]="row?.prefix === '-'"
+          [class.insert-row]="row?.prefix === '+'"
+          [class.empty-row]="!row?.lineContent"
+      >
+        <ng-container *ngIf="row?.prefix === '-' || row?.prefix === '+'; else hasNoDiffs">
+          <span
+            [innerHTML]="diff.content | lineContent"
+            [ngClass]="{ highlight: diff.isDiff }"
+            *ngFor="let diff of row?.lineDiffs; trackBy: trackDiffs"
+          ></span>
+        </ng-container>
+        <ng-template #hasNoDiffs>
+          <span [innerHTML]="row?.lineContent | lineContent"></span>
+        </ng-template>
+      </td>
+    </ng-container>
+
+    <!-- Header and Row Declarations -->
+    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
