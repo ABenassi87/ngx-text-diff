@@ -27,6 +27,20 @@ export interface DiffLineResult {
   lineDiffs: DiffPart[];
 }
 
+export interface DiffTableSideBySide {
+  left: DiffLineResult[];
+  right: DiffLineResult[];
+}
+
+export interface DiffTableLineByLine {
+  rows: DiffLineByLineResult[];
+}
+
+export interface DiffLineByLineResult extends DiffLineResult {
+  lineNumber: number;
+  lineNumberRight: number;
+}
+
 export interface DiffTableRowResult {
   leftContent: DiffLineResult;
   rightContent: DiffLineResult;

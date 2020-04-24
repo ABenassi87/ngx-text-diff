@@ -52,9 +52,8 @@ export class HomeComponent implements OnInit {
   }
 
   submitComparison() {
-    this.submitted = false;
-    this.contentObservable.next(this.content);
     this.submitted = true;
+    this.contentObservable.next(this.content);
   }
 
   handleChange(side: 'left' | 'right', value: string) {
