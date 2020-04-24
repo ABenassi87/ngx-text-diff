@@ -88,21 +88,12 @@ export class NgxTextDiffComponent implements OnInit, AfterViewInit, OnDestroy {
         this.diffContent.subscribe(content => {
           this.left = content.leftContent;
           this.right = content.rightContent;
-          this.diff
-            .getDiffsByLines(this.left, this.right)
-            .then(results => {
-              this.tableRows = results;
-              this.populateTable();
-            })
-            .catch(err => {
-              this.tableRows = [];
-              this.populateTable();
-            });
+          this.initTable();
         })
       );
-    } else {
-      this.populateTable();
     }
+
+    this.initTable();
   }
 
   ngAfterViewInit() {
@@ -127,6 +118,19 @@ export class NgxTextDiffComponent implements OnInit, AfterViewInit, OnDestroy {
       this.format = format;
       this.populateTable();
     }
+  }
+
+  initTable() {
+    this.diff
+      .getDiffsByLines(this.left, this.right)
+      .then(results => {
+        this.tableRows = results;
+        this.populateTable();
+      })
+      .catch(err => {
+        this.tableRows = [];
+        this.populateTable();
+      });
   }
 
   populateTable() {

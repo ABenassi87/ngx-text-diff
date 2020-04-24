@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Diff, DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch } from 'diff-match-patch';
 import { DiffLineResult, DiffPart, DiffTableLineByLine, DiffTableRowResult, DiffTableSideBySide } from './ngx-text-diff.model';
-import { isEmpty, isNil } from './ngx-text-diff.utils';
+import { isEmpty } from './ngx-text-diff.utils';
 
 @Injectable({
   providedIn: 'root',
