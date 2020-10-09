@@ -1,11 +1,14 @@
 {
   "name": "ngx-text-diff",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "peerDependencies": {
+    "@angular/cdk": "^10.2.3",
     "@angular/common": "^10.1.4",
-    "@angular/core": "^10.1.4"
+    "@angular/core": "^10.1.4",
+    "@angular/forms": "^10.1.4"
   },
   "dependencies": {
+    "diff-match-patch": "^1.0.5",
     "tslib": "^2.0.0"
   }
 }
