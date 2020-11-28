@@ -32,12 +32,11 @@ export class NgxTextDiffComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() showToolbar = true;
   @Input() showBtnToolbar = true;
   @Input()
-  get hideMatchingLines() {
-    return this._hideMatchingLines;
-  }
-
   set hideMatchingLines(hide: boolean) {
     this.hideMatchingLinesChanged(hide);
+  }
+  get hideMatchingLines() {
+    return this._hideMatchingLines;
   }
   @Input() outerContainerClass: string;
   @Input() outerContainerStyle: any;
