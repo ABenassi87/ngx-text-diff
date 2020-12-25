@@ -4,7 +4,7 @@ import { DiffLineResult, DiffPart, DiffTableRowResult } from './ngx-text-diff.mo
 import { isEmpty, isNil } from './ngx-text-diff.utils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NgxTextDiffService {
   diffParser: diff_match_patch;
@@ -63,13 +63,13 @@ export class NgxTextDiffService {
                 lineNumber: lineLeft,
                 lineContent: line,
                 lineDiffs: [],
-                prefix: ''
+                prefix: '',
               };
               rightContent = {
                 lineNumber: lineRight,
                 lineContent: line,
                 lineDiffs: [],
-                prefix: ''
+                prefix: '',
               };
               rowTemp = {
                 leftContent,
@@ -100,7 +100,7 @@ export class NgxTextDiffService {
                 lineNumber: lineLeft,
                 lineContent: line,
                 lineDiffs: [{ content: line, isDiff: true }],
-                prefix: '-'
+                prefix: '-',
               };
               if (rightDiffRow) {
                 rightDiffRow.leftContent = leftContent;
@@ -143,7 +143,7 @@ export class NgxTextDiffService {
                 lineNumber: lineRight,
                 lineContent: line,
                 lineDiffs: [{ content: line, isDiff: true }],
-                prefix: '+'
+                prefix: '+',
               };
               if (leftDiffRow) {
                 leftDiffRow.rightContent = rightContent;
@@ -186,36 +186,7 @@ export class NgxTextDiffService {
   }
 
   private getDiffParts(value: string, compareValue: string): DiffPart[] {
-    const diffParts: DiffPart[] = [];
-    let i = 0;
-    let j = 0;
-    let shared = '';
-    let diff = '';
-
-    while (i < value.length) {
-      if (value[i] === compareValue[j] && j < compareValue.length) {
-        if (diff !== '') {
-          diffParts.push({ content: diff, isDiff: true });
-          diff = '';
-        }
-        shared += value[i];
-      } else {
-        if (shared !== '') {
-          diffParts.push({ content: shared, isDiff: false });
-          shared = '';
-        }
-        diff += value[i];
-      }
-      i++;
-      j++;
-    }
-
-    if (diff !== '') {
-      diffParts.push({ content: diff, isDiff: true });
-    } else if (shared !== '') {
-      diffParts.push({ content: shared, isDiff: false });
-    }
-
-    return diffParts;
+    const diffs: Diff[] = this.diffParser.diff_main(value, compareValue);
+    return diffs.filter(([type]) => type !== DIFF_INSERT).map(([type, content]): DiffPart => ({ content, isDiff: type !== DIFF_EQUAL }));
   }
 }
