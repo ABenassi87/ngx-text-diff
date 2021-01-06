@@ -44,3 +44,10 @@ export interface DiffResults {
     numDiffs: number;
   }[];
 }
+
+export interface ProcessLinesOptions {
+  leftLines: string[];
+  rightLines: string[];
+  leftNumber: number;
+  rightNumber: number;
+}
