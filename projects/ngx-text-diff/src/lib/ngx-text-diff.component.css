@@ -59,6 +59,7 @@
   padding-left: 10px;
   padding-right: 10px;
   font-size: 87.5%;
+  user-select:none;
 }
 
 .line-number-col-left {
@@ -68,6 +69,7 @@
   text-align: right;
   background-color: #f7f7f7;
   font-size: 87.5%;
+  user-select:none;
 }
 
 .insert-row,
@@ -109,6 +111,7 @@ td.prefix-col {
   padding-left: 10px;
   padding-right: 10px;
   line-height: 24px;
+  user-select:none;
 }
 
 .td-btn-group {
