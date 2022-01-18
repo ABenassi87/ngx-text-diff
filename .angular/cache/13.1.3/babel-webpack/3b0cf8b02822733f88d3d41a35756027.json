@@ -1,1 +1,0 @@
-{"ast":null,"code":"export const isNil = val => val === undefined || val === null;\nexport const isEmpty = val => val == null || !(Object.keys(val) || val).length || (Object.keys(val) || val).length === 0;","map":null,"metadata":{},"sourceType":"module"}
