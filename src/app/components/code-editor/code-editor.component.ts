@@ -14,7 +14,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Editor, EditorChangeLinkedList, EditorConfiguration, EditorFromTextArea, ScrollInfo } from 'codemirror';
+import { Editor, EditorChange, EditorConfiguration, EditorFromTextArea, ScrollInfo } from 'codemirror';
 
 function normalizeLineEndings(str: string) {
   if (!str) {
@@ -28,7 +28,6 @@ declare var require: any;
 @Component({
   selector: 'tda-code-editor',
   templateUrl: './code-editor.component.html',
-  styleUrls: ['./code-editor.component.css'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -88,31 +87,19 @@ export class CodeEditorComponent implements AfterViewInit, OnDestroy, ControlVal
       this.codeMirror.on('scroll', this.scrollChanged.bind(this));
       this.codeMirror.on('blur', () => this._ngZone.run(() => this.focusChanged(false)));
       this.codeMirror.on('focus', () => this._ngZone.run(() => this.focusChanged(true)));
-      this.codeMirror.on('change', (cm: Editor, change: EditorChangeLinkedList) =>
+      this.codeMirror.on('change', (cm: Editor, change: EditorChange) =>
         this._ngZone.run(() => this.codemirrorValueChanged(cm, change))
       );
       this.codeMirror.setValue(this.value);
     });
   }
-  /*ngDoCheck() {
-    if (!this._differ) {
-      return;
-    }
-    // check options have not changed
-    const changes = this._differ.diff(this._options);
-    if (changes) {
-      changes.forEachChangedItem((option: KeyValueChangeRecord<any, any>) => this.setOptionIfChanged(option.key, option.currentValue));
-      changes.forEachAddedItem(option => this.setOptionIfChanged(option.key, option.currentValue));
-      changes.forEachRemovedItem(option => this.setOptionIfChanged(option.key, option.currentValue));
-    }
-  }*/
   ngOnDestroy() {
     // is there a lighter-weight way to remove the cm instance?
     if (this.codeMirror) {
       this.codeMirror.toTextArea();
     }
   }
-  codemirrorValueChanged(cm: Editor, change: EditorChangeLinkedList) {
+  codemirrorValueChanged(cm: Editor, change: EditorChange) {
     if (change.origin !== 'setValue') {
       this.value = cm.getValue();
       this.onChange(this.value);
