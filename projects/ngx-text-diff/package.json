@@ -19,7 +19,8 @@
   },
   "homepage": "https://ngx-text-diff.herokuapp.com/home",
   "dependencies": {
-    "diff-match-patch": "^1.0.4"
+    "diff-match-patch": "^1.0.4",
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "@angular/common": ">=6.0.0",
