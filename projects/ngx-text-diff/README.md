@@ -2,14 +2,14 @@
 - A simple text diff `component` to be used with Angular and based on `google diff match patch` library.
 
 ## Dependencies
- - diff-match-patch : ^1.0.4
+ - diff-match-patch : ^1.0.5
 
 ## Required Packages
 These packages will not be auto-installed and must be installed in addition to this library.
- - @angular/common >= 6.0.0
- - @angular/core >= 6.0.0
- - @angular/forms >= 6.0.0
- - @angular/cdk >= 6.0.0 (used for scrolling synchronization)
+ - @angular/common >= 12
+ - @angular/core >= 12
+ - @angular/forms >= 12
+ - @angular/cdk >= 12 (used for scrolling synchronization)
 
 ## Demo
 [Ngx Text Diff Demo](https://ngx-text-diff.herokuapp.com/home)
@@ -18,8 +18,8 @@ These packages will not be auto-installed and must be installed in addition to t
 `npm i ngx-text-diff`
 
 ## API
-`module: NgxTextDiffModule`  
-`component: NgxTextDiffComponent`  
+`module: NgxTextDiffModule`
+`component: NgxTextDiffComponent`
 `selector: td-ngx-text-diff`
 
 ### Inputs
