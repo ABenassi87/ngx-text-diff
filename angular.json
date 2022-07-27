@@ -3,5 +3,130 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "ngx-text-diff": {
+      "projectType": "library",
+      "root": "projects/ngx-text-diff",
+      "sourceRoot": "projects/ngx-text-diff/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-text-diff/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-text-diff/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-text-diff/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-text-diff/src/test.ts",
+            "tsConfig": "projects/ngx-text-diff/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-text-diff/karma.conf.js"
+          }
+        }
+      }
+    },
+    "ngx-text-diff-app": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/ngx-text-diff-app",
+      "sourceRoot": "projects/ngx-text-diff-app/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ngx-text-diff-app",
+            "index": "projects/ngx-text-diff-app/src/index.html",
+            "main": "projects/ngx-text-diff-app/src/main.ts",
+            "polyfills": "projects/ngx-text-diff-app/src/polyfills.ts",
+            "tsConfig": "projects/ngx-text-diff-app/tsconfig.app.json",
+            "assets": [
+              "projects/ngx-text-diff-app/src/favicon.ico",
+              "projects/ngx-text-diff-app/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-text-diff-app/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/ngx-text-diff-app/src/environments/environment.ts",
+                  "with": "projects/ngx-text-diff-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "ngx-text-diff-app:build:production"
+            },
+            "development": {
+              "browserTarget": "ngx-text-diff-app:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ngx-text-diff-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-text-diff-app/src/test.ts",
+            "polyfills": "projects/ngx-text-diff-app/src/polyfills.ts",
+            "tsConfig": "projects/ngx-text-diff-app/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-text-diff-app/karma.conf.js",
+            "assets": [
+              "projects/ngx-text-diff-app/src/favicon.ico",
+              "projects/ngx-text-diff-app/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-text-diff-app/src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
   }
 }
