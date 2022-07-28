@@ -1,10 +1,15 @@
-import { Directive } from '@angular/core';
+import { Directive, Input, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[libNgxTextDiffContainer]'
+  selector: '[tdContainer]',
 })
-export class NgxTextDiffContainerDirective {
+export class ContainerDirective {
+  @Input() id: string | undefined;
 
-  constructor() { }
+  element: HTMLTableCellElement;
 
+  constructor(private _el: ElementRef) {
+    this.element = _el.nativeElement;
+  }
 }
+
