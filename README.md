@@ -115,7 +115,7 @@ export class HomeComponent implements OnInit {
   [left]="left"
   [right]="right"
   (compareResults)="onCompareResults($event)"
->
+></td-ngx-text-diff>
 ```
 
 ## Build the NgxTextDiff module
