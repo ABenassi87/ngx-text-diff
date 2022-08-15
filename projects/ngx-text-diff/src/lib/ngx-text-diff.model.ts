@@ -28,19 +28,21 @@ export interface DiffLineResult {
 }
 
 export interface DiffTableRowResult {
-  leftContent: DiffLineResult;
-  rightContent: DiffLineResult;
+  leftContent: DiffLineResult | null;
+  rightContent: DiffLineResult | null;
   belongTo: SideDiff;
   hasDiffs: boolean;
+  numDiffs: number;
+}
+
+type RowsWithDiff = {
+  leftLineNumber: number | null;
+  rightLineNumber: number | null;
   numDiffs: number;
 }
 
 export interface DiffResults {
   hasDiff: boolean;
   diffsCount: number;
-  rowsWithDiff: {
-    leftLineNumber?: number;
-    rightLineNumber?: number;
-    numDiffs: number;
-  }[];
+  rowsWithDiff: RowsWithDiff[];
 }

@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
-// @ts-ignore
 import { Diff, DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, diff_match_patch } from 'diff-match-patch';
 import {DiffLineResult, DiffPart, DiffTableRowResult} from "./ngx-text-diff.model";
-import {isEmpty} from "./ngx-text-diff.utils";
+import {isEmpty, countDiffs} from "./ngx-text-diff.utils";
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +10,6 @@ export class NgxTextDiffService {
   diffParser: diff_match_patch;
 
   constructor() {
-    this.initParser();
-  }
-
-  private initParser() {
     this.diffParser = new diff_match_patch();
   }
 
@@ -43,11 +38,11 @@ export class NgxTextDiffService {
         rows = [];
       }
       const [diffType, diffValue] = diff;
-      let leftDiffRow: DiffTableRowResult;
-      let rightDiffRow: DiffTableRowResult;
-      let leftContent: DiffLineResult;
-      let rightContent: DiffLineResult;
-      let rowTemp: DiffTableRowResult;
+      let leftDiffRow: DiffTableRowResult | undefined;
+      let rightDiffRow: DiffTableRowResult | undefined;
+      let leftContent: DiffLineResult | undefined;
+      let rightContent: DiffLineResult | undefined;
+      let rowTemp: DiffTableRowResult | undefined;
       switch (diffType) {
         case DIFF_EQUAL: // 0
           diffValue
@@ -96,13 +91,14 @@ export class NgxTextDiffService {
               rightDiffRow = rows.find(
                 row => !row.leftContent && row.rightContent && row.rightContent.lineNumber === lineLeft && row.rightContent.prefix !== ''
               );
+
               leftContent = {
                 lineNumber: lineLeft,
                 lineContent: line,
                 lineDiffs: [{ content: line, isDiff: true }],
                 prefix: '-',
               };
-              if (rightDiffRow) {
+              if (rightDiffRow?.rightContent) {
                 rightDiffRow.leftContent = leftContent;
                 rightDiffRow.leftContent.lineDiffs = this.getDiffParts(
                   rightDiffRow.leftContent.lineContent,
@@ -113,7 +109,7 @@ export class NgxTextDiffService {
                   rightDiffRow.leftContent.lineContent
                 );
                 rightDiffRow.belongTo = 'both';
-                rightDiffRow.numDiffs = this.countDiffs(rightDiffRow);
+                rightDiffRow.numDiffs = countDiffs(rightDiffRow);
               } else {
                 rows.push({
                   leftContent,
@@ -145,7 +141,7 @@ export class NgxTextDiffService {
                 lineDiffs: [{ content: line, isDiff: true }],
                 prefix: '+',
               };
-              if (leftDiffRow) {
+              if (leftDiffRow?.leftContent) {
                 leftDiffRow.rightContent = rightContent;
                 leftDiffRow.leftContent.lineDiffs = this.getDiffParts(
                   leftDiffRow.leftContent.lineContent,
@@ -156,7 +152,7 @@ export class NgxTextDiffService {
                   leftDiffRow.leftContent.lineContent
                 );
                 leftDiffRow.belongTo = 'both';
-                leftDiffRow.numDiffs = this.countDiffs(leftDiffRow);
+                leftDiffRow.numDiffs = countDiffs(leftDiffRow);
               } else {
                 rows.push({
                   leftContent: null,
@@ -174,18 +170,9 @@ export class NgxTextDiffService {
     }, []);
   }
 
-  private countDiffs(result: DiffTableRowResult): number {
-    let diffCount = 0;
-    if (result.leftContent) {
-      diffCount += result.leftContent.lineDiffs.filter(diff => diff.isDiff).length;
-    }
-    if (result.leftContent) {
-      diffCount += result.rightContent.lineDiffs.filter(diff => diff.isDiff).length;
-    }
-    return diffCount;
-  }
 
-  private getDiffParts(value: string, compareValue: string): DiffPart[] {
+
+  private getDiffParts(value: string, compareValue: string = ''): DiffPart[] {
     const diffs: Diff[] = this.diffParser.diff_main(value, compareValue);
     return diffs.filter(([type]) => type !== DIFF_INSERT).map(([type, content]): DiffPart => ({ content, isDiff: type !== DIFF_EQUAL }));
   }

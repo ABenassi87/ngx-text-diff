@@ -18,7 +18,7 @@ import {
   DiffTableFormatOption,
   DiffTableRowResult
 } from "./ngx-text-diff.model";
-import {CdkScrollable, ScrollDispatcher} from "@angular/cdk/overlay";
+import {ScrollDispatcher} from "@angular/cdk/overlay";
 
 @Component({
   selector: 'td-ngx-text-diff',
@@ -43,7 +43,7 @@ get hideMatchingLines() {
   set hideMatchingLines(hide: boolean) {
     this.hideMatchingLinesChanged(hide);
   }
-@Input() outerContainerClass: string;
+@Input() outerContainerClass: string | undefined;
 @Input() outerContainerStyle: any;
 @Input() toolbarClass: string | undefined;
 @Input() toolbarStyle: any;
@@ -195,7 +195,7 @@ get hideMatchingLines() {
   }
 
 private initScrollListener() {
-    this.subscriptions.push(this.scrollService.scrolled().subscribe((scrollableEv: CdkScrollable) => {
+    this.subscriptions.push(this.scrollService.scrolled().subscribe((scrollableEv) => {
       if (scrollableEv && this.synchronizeScrolling) {
         const scrollableId = scrollableEv.getElementRef().nativeElement.id;
         const nonScrolledContainer: ContainerDirective | undefined = this.containers ? this.containers.find(container => container.id !== scrollableId) : undefined;

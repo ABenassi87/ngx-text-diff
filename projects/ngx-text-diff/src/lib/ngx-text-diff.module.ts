@@ -4,6 +4,7 @@ import { LoaderSpinnerComponent } from './loader-spinner/loader-spinner.componen
 import { FormatLinePipe } from './format-line.pipe';
 import {ContainerDirective} from './ngx-text-diff-container.directive';
 import {CommonModule} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 
 
 
@@ -15,7 +16,8 @@ import {CommonModule} from "@angular/common";
     ContainerDirective
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   exports: [
     NgxTextDiffComponent
