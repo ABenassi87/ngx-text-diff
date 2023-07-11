@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es2020",
+    "declarationMap": true,
     "module": "es2015",
     "moduleResolution": "node",
     "declaration": true,
