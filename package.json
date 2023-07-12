@@ -71,6 +71,6 @@
     "webpack-bundle-analyzer": "^4.9.0"
   },
   "volta": {
-    "node": "16.13.2"
+    "node": "16.20.1"
   }
 }
