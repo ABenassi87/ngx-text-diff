@@ -6,10 +6,10 @@
 
 ## Required Packages
 These packages will not be auto-installed and must be installed in addition to this library.
- - @angular/common >= 6.0.0
- - @angular/core >= 6.0.0
- - @angular/forms >= 6.0.0
- - @angular/cdk >= 6.0.0 (used for scrolling synchronization)
+ - @angular/common ^14.3.0
+ - @angular/core ^14.3.0
+ - @angular/forms ^14.3.0
+ - @angular/cdk ^14.2.7 (used for scrolling synchronization)
 
 ## Demo
 [Ngx Text Diff Demo](https://ngx-text-diff.herokuapp.com/home)
