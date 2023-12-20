@@ -1,6 +1,6 @@
 # NgxTextDiff
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.7.
 
 ## Code scaffolding
 

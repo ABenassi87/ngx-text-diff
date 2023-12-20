@@ -7,7 +7,7 @@ import {isEmpty, countDiffs} from "./ngx-text-diff.utils";
   providedIn: 'root'
 })
 export class NgxTextDiffService {
-  diffParser: diff_match_patch;
+  private diffParser: any;
 
   constructor() {
     this.diffParser = new diff_match_patch();
@@ -47,13 +47,13 @@ export class NgxTextDiffService {
         case DIFF_EQUAL: // 0
           diffValue
             .split('\n')
-            .filter((value, index, array) => {
+            .filter((value: string, index: number, array: Array<string>) => {
               if (index === array.length - 1) {
                 return !isEmpty(value);
               }
               return true;
             })
-            .forEach(line => {
+            .forEach((line: string) => {
               leftContent = {
                 lineNumber: lineLeft,
                 lineContent: line,
@@ -81,13 +81,13 @@ export class NgxTextDiffService {
         case DIFF_DELETE: // -1
           diffValue
             .split('\n')
-            .filter((value, index, array) => {
+            .filter((value: string, index: number, array: Array<string>) => {
               if (index === array.length - 1) {
                 return !isEmpty(value);
               }
               return true;
             })
-            .forEach(line => {
+            .forEach((line: string) => {
               rightDiffRow = rows.find(
                 row => !row.leftContent && row.rightContent && row.rightContent.lineNumber === lineLeft && row.rightContent.prefix !== ''
               );
@@ -125,13 +125,13 @@ export class NgxTextDiffService {
         case DIFF_INSERT: // 1
           diffValue
             .split('\n')
-            .filter((value, index, array) => {
+            .filter((value: string, index: number, array: Array<string>) => {
               if (index === array.length - 1) {
                 return !isEmpty(value);
               }
               return true;
             })
-            .forEach(line => {
+            .forEach((line: string) => {
               leftDiffRow = rows.find(
                 row => row.leftContent && !row.rightContent && row.leftContent.lineNumber === lineRight && row.leftContent.prefix !== ''
               );

@@ -56,7 +56,10 @@
             "styles": [
               "projects/ngx-text-diff-app/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "diff-match-patch"
+            ]
           },
           "configurations": {
             "production": {
@@ -95,10 +98,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ngx-text-diff-app:build:production"
+              "buildTarget": "ngx-text-diff-app:build:production"
             },
             "development": {
-              "browserTarget": "ngx-text-diff-app:build:development"
+              "buildTarget": "ngx-text-diff-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -106,7 +109,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngx-text-diff-app:build"
+            "buildTarget": "ngx-text-diff-app:build"
           }
         },
         "test": {
