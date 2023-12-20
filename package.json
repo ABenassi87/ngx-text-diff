@@ -1,6 +1,6 @@
 {
-  "name": "ngx-text-diff-ws",
-  "version": "0.0.0",
+  "name": "ngx-text-diff-ivy",
+  "version": "0.17.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

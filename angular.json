@@ -56,7 +56,10 @@
             "styles": [
               "projects/ngx-text-diff-app/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "diff-match-patch"
+            ]
           },
           "configurations": {
             "production": {
