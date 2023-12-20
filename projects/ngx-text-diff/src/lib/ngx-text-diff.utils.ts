@@ -6,10 +6,10 @@ export const isEmpty = (val: any) => val == null || !(Object.keys(val) || val).l
 export function countDiffs(result: DiffTableRowResult): number {
   let diffCount = 0;
   if (result.leftContent) {
-    diffCount += result.leftContent.lineDiffs.filter(diff => diff.isDiff).length;
+    diffCount += result.leftContent.lineDiffs.filter((diff: any) => diff.isDiff).length;
   }
   if (result.rightContent) {
-    diffCount += result.rightContent.lineDiffs.filter(diff => diff.isDiff).length;
+    diffCount += result.rightContent.lineDiffs.filter((diff: any) => diff.isDiff).length;
   }
   return diffCount;
 }

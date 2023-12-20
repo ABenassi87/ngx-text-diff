@@ -1,6 +1,6 @@
 {
   "name": "ngx-text-diff",
-  "version": "0.14.0","description": "A Text Diff component for Angular.",
+  "version": "0.17.0","description": "A Text Diff component for Angular.",
   "keywords": [
     "Angular",
     "Library",
@@ -18,16 +18,16 @@
   },
   "homepage": "https://ngx-text-diff.herokuapp.com/home",
   "peerDependencies": {
-    "@angular/cdk": "^14.1.0",
-    "@angular/common": "^14.1.0",
-    "@angular/core": "^14.1.0",
-    "@angular/forms": "^14.1.0"
+    "@angular/cdk": "~17.0.4",
+    "@angular/common": "~17.0.7",
+    "@angular/core": "~17.0.7",
+    "@angular/forms": "~17.0.7",
+    "diff-match-patch": "^1.0.5"
   },
   "dependencies": {
-    "diff-match-patch": "^1.0.5",
-    "tslib": "^2.3.0"
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
-    "@types/diff-match-patch": "^1.0.32"
+    "@types/diff-match-patch": "^1.0.36"
   }
 }

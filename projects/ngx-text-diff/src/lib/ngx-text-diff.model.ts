@@ -28,8 +28,8 @@ export interface DiffLineResult {
 }
 
 export interface DiffTableRowResult {
-  leftContent: DiffLineResult | null;
-  rightContent: DiffLineResult | null;
+  leftContent: DiffLineResult | any;
+  rightContent: DiffLineResult | any;
   belongTo: SideDiff;
   hasDiffs: boolean;
   numDiffs: number;

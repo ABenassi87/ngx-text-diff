@@ -195,7 +195,7 @@ get hideMatchingLines() {
   }
 
 private initScrollListener() {
-    this.subscriptions.push(this.scrollService.scrolled().subscribe((scrollableEv) => {
+    this.subscriptions.push(this.scrollService.scrolled().subscribe((scrollableEv: any) => {
       if (scrollableEv && this.synchronizeScrolling) {
         const scrollableId = scrollableEv.getElementRef().nativeElement.id;
         const nonScrolledContainer: ContainerDirective | undefined = this.containers ? this.containers.find(container => container.id !== scrollableId) : undefined;
